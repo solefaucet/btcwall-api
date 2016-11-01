@@ -1,0 +1,60 @@
+http:
+  address: 127.0.0.1:9909
+  mode: debug
+
+log:
+  level: debug # debug, info, warn, error, fatal, panic
+  graylog_hook:
+    facility: btcwall-api # facility name
+    health_check_interval: 5s
+    # nodes:
+    #   - udp_address: 127.0.0.1:12201 # graylog udp address
+    #     health_check_url: http://127.0.0.1:9100/api/lbstatus
+    #     weight: 2
+
+geo:
+  filename: xxx
+
+rpc:
+  address: http://127.0.0.1:9987/
+  max_idle_conns_per_host: 128
+  max_concurrent_requests: 128
+
+offerwalls:
+  adgate:
+    whitelist_ips:
+      - 10.11.100.11
+      - 10.11.100.12
+      - 10.11.100.13
+
+  adscend:
+    whitelist_ips:
+      - 10.11.100.11
+      - 10.11.100.12
+      - 10.11.100.13
+
+  kiwiwall:
+    whitelist_ips:
+      - 10.11.100.11
+      - 10.11.100.12
+      - 10.11.100.13
+    secret_key: dllm
+
+  personaly:
+    whitelist_ips:
+      - 10.11.100.11
+      - 10.11.100.12
+      - 10.11.100.13
+    app_hash: hash
+    secret_key: secret
+
+  point_click_track:
+    whitelist_ips:
+      - 192.11.44.19
+
+  ptcwall:
+    whitelist_ips:
+      - 192.11.44.19
+
+  wannads:
+    secret_key: dllm
