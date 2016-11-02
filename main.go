@@ -59,7 +59,10 @@ func main() {
 
 	// http server
 	router := gin.New()
-	var dal dataAccessLayer
+	dal := dataAccessLayer{}
+
+	// load balancer status route
+	router.GET("/lbstatus", lbstatusHandler)
 
 	// middlewares
 	publisherAuthRequiredMiddleware := middlewares.PublisherAuthRequired(dal.GetAuthToken)
@@ -69,15 +72,6 @@ func main() {
 		middlewares.CORS(),
 		gin.ErrorLogger(),
 	)
-
-	// load balancer status route
-	router.GET("/lbstatus", func(c *gin.Context) {
-		status := http.StatusOK
-		if !isServiceAlive() {
-			status = http.StatusServiceUnavailable
-		}
-		c.Status(status)
-	})
 
 	// integrated with offerwalls
 	offerwallHandler := offerwalls.New(dal)
@@ -162,6 +156,14 @@ func main() {
 		"state":   "running",
 	})
 	startServer(config.HTTP.Address, router)
+}
+
+func lbstatusHandler(c *gin.Context) {
+	status := http.StatusOK
+	if !isServiceAlive() {
+		status = http.StatusServiceUnavailable
+	}
+	c.Status(status)
 }
 
 func startServer(address string, handler http.Handler) {
