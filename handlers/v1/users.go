@@ -34,7 +34,6 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 		}{}
 
 		if err := c.BindJSON(&payload); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		payload.Address = strings.TrimSpace(payload.Address)
