@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 	"github.com/solefaucet/btcwall-api/models"
+	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // PersonalyCallback handles personaly callback
@@ -14,9 +14,9 @@ import (
 func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount        int64  `form:"amount" binding:"required"`
-			TransactionID string `form:"tx_id" binding:"required"`
-			OfferName     string `form:"offer_name"`
+			Amount        float64 `form:"amount" binding:"required"`
+			TransactionID string  `form:"tx_id" binding:"required"`
+			OfferName     string  `form:"offer_name"`
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNamePersonaly, c, err)
@@ -34,7 +34,7 @@ func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNamePersonaly,
 			TransactionID: payload.TransactionID,
-			Amount:        payload.Amount,
+			Amount:        int64(payload.Amount),
 		}
 
 		if err := o.handleOfferCallback(offer, payload.Amount < 0); err != nil {

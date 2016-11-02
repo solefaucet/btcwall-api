@@ -5,18 +5,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 	"github.com/solefaucet/btcwall-api/models"
+	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // WannadsCallback handles adgate callback
 func (o OfferwallHandler) WannadsCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount        int64  `form:"reward" binding:"required"`
-			TransactionID string `form:"transId" binding:"required"`
-			OfferName     string `form:"compaign_name"`
-			Status        int64  `form:"status" binding:"required,eq=1|eq=2"` // 1 success 2 chargeback
+			Amount        float64 `form:"reward" binding:"required"`
+			TransactionID string  `form:"transId" binding:"required"`
+			OfferName     string  `form:"compaign_name"`
+			Status        int64   `form:"status" binding:"required,eq=1|eq=2"` // 1 success 2 chargeback
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNameWannads, c, err)
@@ -34,7 +34,7 @@ func (o OfferwallHandler) WannadsCallback() gin.HandlerFunc {
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNameWannads,
 			TransactionID: payload.TransactionID,
-			Amount:        payload.Amount,
+			Amount:        int64(payload.Amount),
 		}
 
 		if err := o.handleOfferCallback(offer, payload.Status == 2); err != nil {

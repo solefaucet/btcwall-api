@@ -5,17 +5,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 	"github.com/solefaucet/btcwall-api/models"
+	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // AdscendCallback handles adscend callback
 func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount        int64  `form:"amount" binding:"required"`
-			TransactionID string `form:"tx_id" binding:"required"`
-			OfferName     string `form:"offer_name"` // NOTE: to fix
+			Amount        float64 `form:"amount" binding:"required"`
+			TransactionID string  `form:"tx_id" binding:"required"`
+			OfferName     string  `form:"offer_name"` // NOTE: to fix
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNameAdscend, c, err)
@@ -33,7 +33,7 @@ func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNameAdscend,
 			TransactionID: payload.TransactionID,
-			Amount:        payload.Amount,
+			Amount:        int64(payload.Amount),
 		}
 
 		if err := o.handleOfferCallback(offer, payload.Amount < 0); err != nil {

@@ -7,20 +7,20 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 	"github.com/solefaucet/btcwall-api/models"
+	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // PointClickTrackCallback handles pointclicktrack callback
 func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount         int64  `form:"commission" binding:"required"`
-			OfferID        string `form:"campaign_id" binding:"required"`
-			SID            string `form:"sid1" binding:"required"`
-			OfferName      string `form:"campaign_name"`
-			Status         string `form:"status" binding:"required,eq=credited|eq=reversed"`
-			ReversalReason string `form:"reversal_reason"`
+			Amount         float64 `form:"commission" binding:"required"`
+			OfferID        string  `form:"campaign_id" binding:"required"`
+			SID            string  `form:"sid1" binding:"required"`
+			OfferName      string  `form:"campaign_name"`
+			Status         string  `form:"status" binding:"required,eq=credited|eq=reversed"`
+			ReversalReason string  `form:"reversal_reason"`
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNamePointClickTrack, c, err)
@@ -39,7 +39,7 @@ func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNamePointClickTrack,
 			TransactionID: transactionID,
-			Amount:        payload.Amount,
+			Amount:        int64(payload.Amount),
 		}
 
 		isChargeback := payload.Status == "reversed"
