@@ -154,7 +154,7 @@ func main() {
 		"address": config.HTTP.Address,
 		"mode":    config.HTTP.Mode,
 		"state":   "running",
-	})
+	}).Info("server is starting...")
 	startServer(config.HTTP.Address, router)
 }
 
