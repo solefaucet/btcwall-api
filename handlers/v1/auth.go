@@ -21,7 +21,6 @@ func CreateAuthToken(
 			Password string `json:"password" binding:"required"`
 		}{}
 		if err := c.BindJSON(&payload); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 

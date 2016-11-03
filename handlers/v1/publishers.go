@@ -58,7 +58,6 @@ func (publisherHandler PublisherHandler) CreatePublisher() gin.HandlerFunc {
 			Address  string `json:"address" binding:"required"`
 		}{}
 		if err := c.BindJSON(&payload); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
