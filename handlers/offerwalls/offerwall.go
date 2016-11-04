@@ -2,8 +2,8 @@ package offerwalls
 
 import (
 	"github.com/Sirupsen/logrus"
-	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 	"github.com/solefaucet/btcwall-api/models"
+	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // OfferwallHandler _
@@ -50,5 +50,6 @@ func (o OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		}
 	}
 
+	entry.Info("succeed to handle offer callback")
 	return nil
 }
