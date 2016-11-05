@@ -39,6 +39,12 @@ type stub struct {
 	// user
 	GetUser    func(address string) (*rpcmodels.User, error)
 	CreateUser func(address string) (*rpcmodels.User, error)
+
+	// withdrawals
+	GetNumberOfUserWithdrawalsByUserID           func(userID int64) (int64, error)
+	GetUserWithdrawalsByUserID                   func(userID, limit, offset int64) ([]rpcmodels.UserWithdrawal, error)
+	GetNumberOfPublisherWithdrawalsByPublisherID func(publisherID int64) (int64, error)
+	GetPublisherWithdrawalsByPublisherID         func(publisherID, limit, offset int64) ([]rpcmodels.PublisherWithdrawal, error)
 }
 
 type dataAccessLayer struct{}
@@ -101,4 +107,20 @@ func (dataAccessLayer) GetUser(address string) (*rpcmodels.User, error) {
 
 func (dataAccessLayer) CreateUser(address string) (*rpcmodels.User, error) {
 	return remote.CreateUser(address)
+}
+
+func (dataAccessLayer) GetUserWithdrawalsByUserID(userID, limit, offset int64) ([]rpcmodels.UserWithdrawal, error) {
+	return remote.GetUserWithdrawalsByUserID(userID, limit, offset)
+}
+
+func (dataAccessLayer) GetPublisherWithdrawalsByPublisherID(publisherID, limit, offset int64) ([]rpcmodels.PublisherWithdrawal, error) {
+	return remote.GetPublisherWithdrawalsByPublisherID(publisherID, limit, offset)
+}
+
+func (dataAccessLayer) GetNumberOfUserWithdrawalsByUserID(userID int64) (int64, error) {
+	return remote.GetNumberOfUserWithdrawalsByUserID(userID)
+}
+
+func (dataAccessLayer) GetNumberOfPublisherWithdrawalsByPublisherID(publisherID int64) (int64, error) {
+	return remote.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
 }
