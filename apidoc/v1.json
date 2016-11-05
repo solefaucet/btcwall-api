@@ -156,6 +156,67 @@
                     }
                 }
             }
+        },
+        "/withdrawals/user/{user_id}": {
+            "get": {
+                "tags": [
+                    "Withdrawal"
+                ],
+                "summary": "获取用户提现信息",
+                "operationId": "retrieveUserWithdrawals",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "limit",
+                        "description": "返回结果里面最多包含的条数",
+                        "default": 0,
+                        "maximum": 100,
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "offset",
+                        "default": 0,
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功获取用户提现信息",
+                        "schema": {
+                            "type": "object",
+                            "required": [ "count", "data" ],
+                            "properties": {
+                                "count": {
+                                    "type": "number",
+                                    "format": "int64"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/userWithdrawalModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -246,6 +307,90 @@
                 },
                 "status": {
                     "description": "offer 状态",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "用户创建时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "用户更新时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "userWithdrawalModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "提现 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
+                    "description": "用户 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "address": {
+                    "description": "提现地址",
+                    "type": "string"
+                },
+                "amount": {
+                    "description": "数额",
+                    "type": "number",
+                    "format": "float"
+                },
+                "transaction_id": {
+                    "description": "交易 id",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "提现状态",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "用户创建时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "用户更新时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "publisherWithdrawalModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "提现 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
+                    "description": "网站主 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "address": {
+                    "description": "提现地址",
+                    "type": "string"
+                },
+                "amount": {
+                    "description": "数额",
+                    "type": "number",
+                    "format": "float"
+                },
+                "transaction_id": {
+                    "description": "交易 id",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "提现状态",
                     "type": "string"
                 },
                 "created_at": {
