@@ -148,6 +148,12 @@ func main() {
 	v1OfferRouter.GET("/user/:user_id", v1OfferHandler.UserOfferHandler())                                  // get offers filter by user_id
 	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.SiteOfferHandler()) // get offers filter by site_id
 
+	// v1 withdrawals
+	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
+	v1WithdrawalRouter := v1Router.Group("/withdrawals")
+	v1WithdrawalRouter.GET("/user/:user_id", v1WithdrawalHandler.UserWithdrawalHandler())
+	v1WithdrawalRouter.GET("/publisher/:publisher_id", publisherAuthRequiredMiddleware, v1WithdrawalHandler.PublisherWithdrawalHandler())
+
 	// documentation
 	router.Static("/doc", "/opt/swagger")
 	v1Router.StaticFile("/doc.json", "/opt/apidoc/v1.json")
