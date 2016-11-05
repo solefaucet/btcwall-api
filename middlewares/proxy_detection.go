@@ -19,6 +19,7 @@ func ProxyAuthRequired(getScoreByIP func(string) (int64, error), threshold int64
 		})
 
 		score, err := getScoreByIP(ip)
+		entry = entry.WithField("score", score)
 
 		if err != nil {
 			entry.WithField("error", err.Error()).Warning("fail to get score by ip")
@@ -27,7 +28,7 @@ func ProxyAuthRequired(getScoreByIP func(string) (int64, error), threshold int64
 		}
 
 		if score >= threshold {
-			entry.WithField("block", false).Info("block request from proxy")
+			entry.WithField("block", true).Info("block request from proxy")
 			c.AbortWithStatus(http.StatusProxyAuthRequired)
 			return
 		}
