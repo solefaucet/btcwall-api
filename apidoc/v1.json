@@ -1,0 +1,264 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "btcwall-api",
+        "description": "[btcwall-api](https://github.com/solefaucet/btcwall-api) API 接口文档.\n\n",
+        "termsOfService": "http://helloreverb.com/terms/",
+        "contact": {
+            "name": "api support",
+            "email": "nanohugh@gmail.com",
+            "url": "http://btcwall.co"
+        }
+    },
+    "host": "api.btcwall.co",
+    "basePath": "/v1",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/users/{address}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户信息",
+                "operationId": "retrieveUser",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功获取用户信息",
+                        "schema": {
+                            "$ref": "#/definitions/userModel"
+                        }
+                    },
+                    "404": {
+                        "description": "用户不存在"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "创建用户",
+                "operationId": "createUser",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "address"
+                            ],
+                            "properties": {
+                                "address": {
+                                    "description": "用户比特币地址",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "成功创建用户",
+                        "schema": {
+                            "$ref": "#/definitions/userModel"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    },
+                    "409": {
+                        "description": "用户已存在"
+                    }
+                }
+            }
+        },
+        "/offers/user/{user_id}": {
+            "get": {
+                "tags": [
+                    "Offer"
+                ],
+                "summary": "获取用户 Offer 信息",
+                "operationId": "retrieveUserOffers",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "limit",
+                        "description": "返回结果里面最多包含的条数",
+                        "default": 0,
+                        "maximum": 100,
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "offset",
+                        "default": 0,
+                        "in": "query",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功获取用户 Offer 信息",
+                        "schema": {
+                            "type": "object",
+                            "required": [ "count", "data" ],
+                            "properties": {
+                                "count": {
+                                    "type": "number",
+                                    "format": "int64"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/offerModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "errorModel": {
+            "type": "object",
+            "required": [
+                "error"
+            ],
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "userModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "用户 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "address": {
+                    "description": "用户比特币地址",
+                    "type": "string"
+                },
+                "balance": {
+                    "description": "用户可用余额",
+                    "type": "number",
+                    "format": "float"
+                },
+                "pending_balance": {
+                    "description": "用户待用余额",
+                    "type": "number",
+                    "format": "float"
+                },
+                "created_at": {
+                    "description": "用户创建时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "用户更新时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "offerModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "offer id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "publisher_id": {
+                    "description": "网站主 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "site_id": {
+                    "description": "网站 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user_id": {
+                    "description": "用户 id",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "offer_name": {
+                    "description": "offer 名称",
+                    "type": "string"
+                },
+                "offerwall_name": {
+                    "description": "offerwall 名称",
+                    "type": "string"
+                },
+                "transaction_id": {
+                    "description": "交易 id",
+                    "type": "string"
+                },
+                "amount": {
+                    "description": "数额",
+                    "type": "number",
+                    "format": "float"
+                },
+                "status": {
+                    "description": "offer 状态",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "用户创建时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "用户更新时间, 格式符合 rfc3999",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        }
+    }
+}

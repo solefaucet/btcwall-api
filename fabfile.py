@@ -38,6 +38,8 @@ def local_task(branch_name):
 def remote_setup():
     put('btcwall-api', '/usr/local/bin/btcwall-api', mode=0755, use_sudo=True)
     put('/opt/GeoLite2-City.mmdb', '/opt/GeoLite2-City.mmdb', mode=0644, use_sudo=True)
+    put('/usr/local/share/swagger', '/opt', mode=0755, use_sudo=True)
+    put('apidoc', '/opt', mode=0755, use_sudo=True)
     conf = popen('cat /etc/btcwall/api.yml').read()
     conf = replace_macro(conf, { 'internal_ip': env.host })
     with NamedTemporaryFile(delete=False) as f:
