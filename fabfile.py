@@ -9,6 +9,7 @@ env.user = 'd'
 env.roledefs.update({
     'production': [
         '192.168.193.149', # api-1
+        '192.168.194.49', # api-2
     ]
 })
 
