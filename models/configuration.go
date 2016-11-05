@@ -19,6 +19,9 @@ type Configuration struct {
 	Geo struct {
 		Filename string `mapstructure:"filename" validate:"required"`
 	} `mapstructure:"geo" validate:"required"`
+	ProxyDetection struct {
+		Threshold int64 `mapstructure:"threshold" validate:"required,min=0,max=5"`
+	} `mapstructure:"proxy_detection" validate:"required"`
 	RPC struct {
 		Address               string `mapstructure:"address" validate:"required,url"`
 		MaxIdleConnsPerHost   int    `mapstructure:"max_idle_conns_per_host" validate:"required,min=1"`

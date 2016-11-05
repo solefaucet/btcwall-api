@@ -45,6 +45,9 @@ type stub struct {
 	GetUserWithdrawalsByUserID                   func(userID, limit, offset int64) ([]rpcmodels.UserWithdrawal, error)
 	GetNumberOfPublisherWithdrawalsByPublisherID func(publisherID int64) (int64, error)
 	GetPublisherWithdrawalsByPublisherID         func(publisherID, limit, offset int64) ([]rpcmodels.PublisherWithdrawal, error)
+
+	// proxy detection
+	GetScoreByIP func(ip string) (int64, error)
 }
 
 type dataAccessLayer struct{}
@@ -123,4 +126,8 @@ func (dataAccessLayer) GetNumberOfUserWithdrawalsByUserID(userID int64) (int64, 
 
 func (dataAccessLayer) GetNumberOfPublisherWithdrawalsByPublisherID(publisherID int64) (int64, error) {
 	return remote.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
+}
+
+func (dataAccessLayer) GetScoreByIP(ip string) (int64, error) {
+	return remote.GetScoreByIP(ip)
 }

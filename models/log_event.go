@@ -11,4 +11,5 @@ const (
 	LogEventGetGeoFromIP               = "get geo from ip"
 	LogEventChangeServiceState         = "change service state"
 	LogEventReloadConfiguration        = "reload configuration"
+	LogEventBlockProxy                 = "block proxy"
 )

@@ -66,6 +66,7 @@ func main() {
 
 	// middlewares
 	publisherAuthRequiredMiddleware := middlewares.PublisherAuthRequired(dal.GetAuthToken)
+	proxyAuthRequiredMiddleware := middlewares.ProxyAuthRequired(dal.GetScoreByIP, config.ProxyDetection.Threshold)
 	router.Use(
 		middlewares.RecoveryWithWriter(os.Stderr),
 		middlewares.Logger(geo),
@@ -124,8 +125,8 @@ func main() {
 
 	// v1 user handler
 	v1UserHandler := v1.NewUserHandler(dal)
-	v1Router.POST("/users", v1UserHandler.CreateUser())           // create user
-	v1Router.GET("/users/:address", v1UserHandler.RetrieveUser()) // retrieve user
+	v1Router.POST("/users", proxyAuthRequiredMiddleware, v1UserHandler.CreateUser())           // create user
+	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser()) // retrieve user
 
 	// v1 publisher handler
 	publisherHandler := v1.NewPublisherHandler(dal)
@@ -145,13 +146,13 @@ func main() {
 	// v1 offers
 	v1OfferHandler := v1.NewOfferHandler(dal)
 	v1OfferRouter := v1Router.Group("/offers")
-	v1OfferRouter.GET("/user/:user_id", v1OfferHandler.UserOfferHandler())                                  // get offers filter by user_id
+	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.UserOfferHandler())     // get offers filter by user_id
 	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.SiteOfferHandler()) // get offers filter by site_id
 
 	// v1 withdrawals
 	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
 	v1WithdrawalRouter := v1Router.Group("/withdrawals")
-	v1WithdrawalRouter.GET("/user/:user_id", v1WithdrawalHandler.UserWithdrawalHandler())
+	v1WithdrawalRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1WithdrawalHandler.UserWithdrawalHandler())
 	v1WithdrawalRouter.GET("/publisher/:publisher_id", publisherAuthRequiredMiddleware, v1WithdrawalHandler.PublisherWithdrawalHandler())
 
 	// documentation

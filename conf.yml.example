@@ -15,6 +15,9 @@ log:
 geo:
   filename: xxx
 
+proxy_detection:
+  threshold: 3
+
 rpc:
   address: http://127.0.0.1:9987/
   max_idle_conns_per_host: 128

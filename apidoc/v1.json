@@ -47,6 +47,9 @@
                     },
                     "404": {
                         "description": "用户不存在"
+                    },
+                    "407": {
+                        "description": "代理检测无法通过"
                     }
                 }
             }
@@ -89,6 +92,9 @@
                         "schema": {
                             "$ref": "#/definitions/errorModel"
                         }
+                    },
+                    "407": {
+                        "description": "代理检测无法通过"
                     },
                     "409": {
                         "description": "用户已存在"
@@ -153,6 +159,9 @@
                         "schema": {
                             "$ref": "#/definitions/errorModel"
                         }
+                    },
+                    "407": {
+                        "description": "代理检测无法通过"
                     }
                 }
             }
@@ -214,6 +223,9 @@
                         "schema": {
                             "$ref": "#/definitions/errorModel"
                         }
+                    },
+                    "407": {
+                        "description": "代理检测无法通过"
                     }
                 }
             }
