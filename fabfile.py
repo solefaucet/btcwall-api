@@ -36,6 +36,7 @@ def local_task(branch_name):
 
 @parallel
 def remote_setup():
+    put('/etc/btcwall/api.supervisor.conf', '/etc/supervisor/conf.d/btcwall-api.conf', mode=0644, use_sudo=True)
     put('btcwall-api', '/usr/local/bin/btcwall-api', mode=0755, use_sudo=True)
     put('/opt/GeoLite2-City.mmdb', '/opt/GeoLite2-City.mmdb', mode=0644, use_sudo=True)
     put('/usr/local/share/swagger', '/opt', mode=0755, use_sudo=True)
@@ -55,4 +56,5 @@ def replace_macro(s, macro_map):
 
 def restart():
     # restart btcwall-api
+    sudo('supervisorctl update all')
     sudo('supervisorctl restart btcwall-api')
