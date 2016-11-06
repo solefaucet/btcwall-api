@@ -1,6 +1,7 @@
 package offerwalls
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,13 +11,12 @@ import (
 )
 
 // PersonalyCallback handles personaly callback
-// FIXME: to confirm TransactionID
 func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount        float64 `form:"amount" binding:"required"`
-			TransactionID string  `form:"tx_id" binding:"required"`
-			OfferName     string  `form:"offer_name"`
+			Amount    float64 `form:"amount" binding:"required,gt=0"`
+			OfferName string  `form:"offer_name"`
+			OfferID   string  `form:"offer_id"`
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNamePersonaly, c, err)
@@ -27,13 +27,14 @@ func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 		siteID := c.MustGet("site_id").(int64)
 		userID := c.MustGet("user_id").(int64)
 
+		transactionID := fmt.Sprintf("%v_%v", payload.OfferID, userID)
 		offer := rpcmodels.Offer{
 			PublisherID:   publisherID,
 			SiteID:        siteID,
 			UserID:        userID,
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNamePersonaly,
-			TransactionID: payload.TransactionID,
+			TransactionID: transactionID,
 			Amount:        int64(payload.Amount),
 		}
 
