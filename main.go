@@ -64,6 +64,10 @@ func main() {
 	// load balancer status route
 	router.GET("/lbstatus", lbstatusHandler)
 
+	// documentation
+	router.Static("/doc", "/opt/swagger")
+	router.StaticFile("/v1/doc.json", "/opt/apidoc/v1.json")
+
 	// middlewares
 	publisherAuthRequiredMiddleware := middlewares.PublisherAuthRequired(dal.GetAuthToken)
 	proxyAuthRequiredMiddleware := middlewares.ProxyAuthRequired(dal.GetScoreByIP, config.ProxyDetection.Threshold)
@@ -154,10 +158,6 @@ func main() {
 	v1WithdrawalRouter := v1Router.Group("/withdrawals")
 	v1WithdrawalRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1WithdrawalHandler.UserWithdrawalHandler())
 	v1WithdrawalRouter.GET("/publisher/:publisher_id", publisherAuthRequiredMiddleware, v1WithdrawalHandler.PublisherWithdrawalHandler())
-
-	// documentation
-	router.Static("/doc", "/opt/swagger")
-	v1Router.StaticFile("/doc.json", "/opt/apidoc/v1.json")
 
 	// start server
 	logrus.WithFields(logrus.Fields{
