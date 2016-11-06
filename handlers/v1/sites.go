@@ -10,17 +10,17 @@ import (
 
 // SiteHandler _
 type SiteHandler struct {
-	dependency siteHandlerDependency
+	siteStorage siteStorage
 }
 
 // NewSiteHandler _
-func NewSiteHandler(dependency siteHandlerDependency) SiteHandler {
+func NewSiteHandler(dependency siteStorage) SiteHandler {
 	return SiteHandler{
-		dependency: dependency,
+		siteStorage: dependency,
 	}
 }
 
-type siteHandlerDependency interface {
+type siteStorage interface {
 	siteReader
 	siteWriter
 }
@@ -43,7 +43,7 @@ func (s SiteHandler) RetrieveSite() gin.HandlerFunc {
 			return
 		}
 
-		site, err := s.dependency.GetSite(siteID)
+		site, err := s.siteStorage.GetSite(siteID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -63,7 +63,7 @@ func (s SiteHandler) RetrieveSites() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 
-		sites, err := s.dependency.GetSitesByPublisherID(authToken.PublisherID)
+		sites, err := s.siteStorage.GetSitesByPublisherID(authToken.PublisherID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -85,7 +85,7 @@ func (s SiteHandler) CreateSite() gin.HandlerFunc {
 		}
 
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
-		if err := s.dependency.CreateSite(authToken.PublisherID, payload.SiteName, payload.SiteURL); err != nil {
+		if err := s.siteStorage.CreateSite(authToken.PublisherID, payload.SiteName, payload.SiteURL); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

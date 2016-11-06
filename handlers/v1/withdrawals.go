@@ -11,11 +11,7 @@ import (
 
 // WithdrawalHandler _
 type WithdrawalHandler struct {
-	dependency withdrawHandlerDependency
-}
-
-type withdrawHandlerDependency interface {
-	withdrawalReader
+	withdrawalReader withdrawalReader
 }
 
 type withdrawalReader interface {
@@ -27,9 +23,9 @@ type withdrawalReader interface {
 }
 
 // NewWithdrawalHandler _
-func NewWithdrawalHandler(dependency withdrawHandlerDependency) WithdrawalHandler {
+func NewWithdrawalHandler(withdrawalReader withdrawalReader) WithdrawalHandler {
 	return WithdrawalHandler{
-		dependency: dependency,
+		withdrawalReader: withdrawalReader,
 	}
 }
 
@@ -47,13 +43,13 @@ func (w WithdrawalHandler) UserWithdrawalHandler() gin.HandlerFunc {
 			return
 		}
 
-		count, err := w.dependency.GetNumberOfUserWithdrawalsByUserID(userID)
+		count, err := w.withdrawalReader.GetNumberOfUserWithdrawalsByUserID(userID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		withdrawals, err := w.dependency.GetUserWithdrawalsByUserID(userID, payload.Limit, payload.Offset)
+		withdrawals, err := w.withdrawalReader.GetUserWithdrawalsByUserID(userID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -80,13 +76,13 @@ func (w WithdrawalHandler) PublisherWithdrawalHandler() gin.HandlerFunc {
 			return
 		}
 
-		count, err := w.dependency.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
+		count, err := w.withdrawalReader.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		withdrawals, err := w.dependency.GetPublisherWithdrawalsByPublisherID(publisherID, payload.Limit, payload.Offset)
+		withdrawals, err := w.withdrawalReader.GetPublisherWithdrawalsByPublisherID(publisherID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

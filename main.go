@@ -145,10 +145,11 @@ func main() {
 	v1SiteRouter.GET("/:site_id", v1SiteHandler.RetrieveSite())                          // get one site
 
 	// v1 auth token handler
-	v1Router.POST("/auth/publisher", v1.CreateAuthToken(dal.GetPublisher, dal.CreateAuthToken)) // create auth token for access to publisher dashboard
+	authTokenHandler := v1.NewAuthTokenHandler(dal, dal)
+	v1Router.POST("/auth/publisher", authTokenHandler.CreateAuthToken()) // create auth token for access to publisher dashboard
 
 	// v1 offers
-	v1OfferHandler := v1.NewOfferHandler(dal)
+	v1OfferHandler := v1.NewOfferHandler(dal, dal)
 	v1OfferRouter := v1Router.Group("/offers")
 	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.UserOfferHandler())     // get offers filter by user_id
 	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.SiteOfferHandler()) // get offers filter by site_id

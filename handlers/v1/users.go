@@ -22,7 +22,15 @@ func NewUserHandler(userStorage userStorage) UserHandler {
 }
 
 type userStorage interface {
+	userReader
+	userWriter
+}
+
+type userReader interface {
 	GetUser(address string) (*rpcmodels.User, error)
+}
+
+type userWriter interface {
 	CreateUser(address string) (*rpcmodels.User, error)
 }
 

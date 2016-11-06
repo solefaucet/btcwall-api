@@ -24,7 +24,15 @@ func NewPublisherHandler(publisherStorage publisherStorage) PublisherHandler {
 }
 
 type publisherStorage interface {
+	publisherReader
+	publisherWriter
+}
+
+type publisherReader interface {
 	GetPublisher(email string) (*rpcmodels.Publisher, error)
+}
+
+type publisherWriter interface {
 	CreatePublisher(email, password, address string) (*rpcmodels.Publisher, error)
 }
 

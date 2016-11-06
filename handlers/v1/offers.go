@@ -12,18 +12,15 @@ import (
 
 // OfferHandler _
 type OfferHandler struct {
-	dependency offerHandlerDependency
-}
-
-type offerHandlerDependency interface {
-	offerReader
-	siteReader
+	offerReader offerReader
+	siteReader  siteReader
 }
 
 // NewOfferHandler _
-func NewOfferHandler(dependency offerHandlerDependency) OfferHandler {
+func NewOfferHandler(offerReader offerReader, siteReader siteReader) OfferHandler {
 	return OfferHandler{
-		dependency: dependency,
+		offerReader: offerReader,
+		siteReader:  siteReader,
 	}
 }
 
@@ -49,13 +46,13 @@ func (o OfferHandler) UserOfferHandler() gin.HandlerFunc {
 			return
 		}
 
-		count, err := o.dependency.GetNumberOfOffersByUserID(userID)
+		count, err := o.offerReader.GetNumberOfOffersByUserID(userID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		offers, err := o.dependency.GetOffersByUserID(userID, payload.Limit, payload.Offset)
+		offers, err := o.offerReader.GetOffersByUserID(userID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -83,20 +80,20 @@ func (o OfferHandler) SiteOfferHandler() gin.HandlerFunc {
 		}
 
 		// check if authorized
-		site, _ := o.dependency.GetSite(siteID)
+		site, _ := o.siteReader.GetSite(siteID)
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 		if site.PublisherID != authToken.PublisherID {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		count, err := o.dependency.GetNumberOfOffersBySiteID(siteID)
+		count, err := o.offerReader.GetNumberOfOffersBySiteID(siteID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		offers, err := o.dependency.GetOffersBySiteID(siteID, payload.Limit, payload.Offset)
+		offers, err := o.offerReader.GetOffersBySiteID(siteID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
