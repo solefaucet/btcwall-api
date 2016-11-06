@@ -15,7 +15,7 @@ func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 		payload := struct {
 			Amount        float64 `form:"amount" binding:"required"`
 			TransactionID string  `form:"tx_id" binding:"required"`
-			OfferName     string  `form:"offer_name"` // NOTE: to fix
+			OfferName     string  `form:"offer_name"`
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNameAdscend, c, err)
