@@ -31,7 +31,7 @@ func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 		siteID := c.MustGet("site_id").(int64)
 		userID := c.MustGet("user_id").(int64)
 
-		transactionID := fmt.Sprintf("%s|%s", payload.OfferID, payload.SID)
+		transactionID := fmt.Sprintf("%v|%v", payload.OfferID, userID)
 		offer := rpcmodels.Offer{
 			PublisherID:   publisherID,
 			SiteID:        siteID,
