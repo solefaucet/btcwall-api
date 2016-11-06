@@ -36,7 +36,7 @@ func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Amount < 0); err != nil {
+		if err := o.handleOfferCallback(offer, payload.Amount <= 0); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
