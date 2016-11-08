@@ -2,6 +2,7 @@ package rpcmodels
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -31,7 +32,7 @@ func (w UserWithdrawal) MarshalJSON() ([]byte, error) {
 		"user_id":        w.UserID,
 		"address":        w.Address,
 		"amount":         float64(w.Amount) / 1e8,
-		"transaction_id": w.TransactionID,
+		"transaction_id": fmt.Sprintf("https://blockchain.info/tx/%s", w.TransactionID),
 		"status":         w.Status,
 		"created_at":     w.CreatedAt,
 		"updated_at":     w.UpdatedAt,
@@ -57,7 +58,7 @@ func (w PublisherWithdrawal) MarshalJSON() ([]byte, error) {
 		"publisher_id":   w.PublisherID,
 		"address":        w.Address,
 		"amount":         float64(w.Amount) / 1e8,
-		"transaction_id": w.TransactionID,
+		"transaction_id": fmt.Sprintf("https://blockchain.info/tx/%s", w.TransactionID),
 		"status":         w.Status,
 		"created_at":     w.CreatedAt,
 		"updated_at":     w.UpdatedAt,
