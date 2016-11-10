@@ -54,6 +54,10 @@ type Configuration struct {
 			SecretKey string `mapstructure:"secret_key"`
 		} `mapstructure:"wannads"`
 	} `mapstructure:"offerwalls"`
+	Runcpa struct {
+		BaseRegistrationCallbackURL string `mapstructure:"base_registration_callback_url" validate:"required,url"`
+		BaseRevenueShareCallbackURL string `mapstructure:"base_revenue_share_callback_url" validate:"required,url"`
+	} `mapstructure:"runcpa" validate:"required"`
 }
 
 // GraylogHook model
@@ -83,4 +87,5 @@ func (c *Configuration) Copy(config Configuration) {
 	c.Geo = config.Geo
 	c.RPC = config.RPC
 	c.Offerwalls = config.Offerwalls
+	c.Runcpa = config.Runcpa
 }

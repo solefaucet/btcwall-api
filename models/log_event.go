@@ -12,4 +12,6 @@ const (
 	LogEventChangeServiceState         = "change service state"
 	LogEventReloadConfiguration        = "reload configuration"
 	LogEventBlockProxy                 = "block proxy"
+	LogEventCallbackRuncpaRegistration = "callback runcpa registration"
+	LogEventCallbackRuncpaRevenueShare = "callback runcpa revenue share"
 )
