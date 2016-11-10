@@ -155,6 +155,10 @@
 			"Rev": "d2dd0262208475919e1a362f675cfc0e7c10e905"
 		},
 		{
+			"ImportPath": "github.com/moul/http2curl",
+			"Rev": "4e24498b31dba4683efb9d35c1c8a91e2eda28c8"
+		},
+		{
 			"ImportPath": "github.com/on99/logrus-graylog-hook",
 			"Rev": "1fd4554250d9a53f6f82ea7675aa5624ab291bd7"
 		},
@@ -167,6 +171,11 @@
 			"ImportPath": "github.com/oschwald/maxminddb-golang",
 			"Comment": "v0.2.0-52-g03a3fea",
 			"Rev": "03a3feaec4e514002b446197c10e8ee50e39574c"
+		},
+		{
+			"ImportPath": "github.com/parnurzeal/gorequest",
+			"Comment": "v0.2.14-15-ge30af16",
+			"Rev": "e30af16d4e485943aab0b0885ad6bdbb8c0d3dc7"
 		},
 		{
 			"ImportPath": "github.com/pelletier/go-buffruneio",
@@ -263,6 +272,10 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
+			"Rev": "cbbbe2bc0f2efdd2afb318d93f1eadb19350e4a3"
+		},
+		{
+			"ImportPath": "golang.org/x/net/publicsuffix",
 			"Rev": "cbbbe2bc0f2efdd2afb318d93f1eadb19350e4a3"
 		},
 		{
