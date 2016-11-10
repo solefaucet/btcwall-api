@@ -21,11 +21,13 @@ type idPayload struct {
 // IDParserMiddleware parse publisher_id, site_id, user_id from query
 func IDParserMiddleware(key string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		data, err := base64.StdEncoding.DecodeString(c.Query(key))
+		b64Payload := c.Query(key)
+		data, err := base64.StdEncoding.DecodeString(b64Payload)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
-				"event": models.LogEventParseIDCombination,
-				"error": err.Error(),
+				"event":                 models.LogEventParseIDCombination,
+				"error":                 err.Error(),
+				"base64_id_combination": b64Payload,
 			}).Info("cannot base64 decode id combination")
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
