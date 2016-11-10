@@ -1,7 +1,9 @@
 package middlewares
 
 import (
+	"encoding/base64"
 	"encoding/json"
+
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
@@ -19,12 +21,21 @@ type idPayload struct {
 // IDParserMiddleware parse publisher_id, site_id, user_id from query
 func IDParserMiddleware(key string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		idCombination := c.Query(key)
+		data, err := base64.StdEncoding.DecodeString(c.Query(key))
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"event": models.LogEventParseIDCombination,
+				"error": err.Error(),
+			}).Info("cannot base64 decode id combination")
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+
 		var payload idPayload
-		if err := json.Unmarshal([]byte(idCombination), &payload); err != nil {
+		if err := json.Unmarshal(data, &payload); err != nil {
 			logrus.WithFields(logrus.Fields{
 				"event":          models.LogEventParseIDCombination,
-				"id_combination": idCombination,
+				"id_combination": string(data),
 				"error":          err.Error(),
 			}).Info("cannot parse id combination")
 			c.AbortWithError(http.StatusBadRequest, err)
