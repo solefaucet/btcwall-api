@@ -27,6 +27,7 @@ type Offer struct {
 	OfferName     string    `db:"offer_name"`
 	OfferwallName string    `db:"offerwall_name"`
 	TransactionID string    `db:"transaction_id"`
+	TrackID       string    `db:"track_id"`
 	Amount        int64     `db:"amount"`
 	Status        int       `db:"status"`
 	CreatedAt     time.Time `db:"created_at"`
