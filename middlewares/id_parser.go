@@ -1,54 +1,78 @@
 package middlewares
 
 import (
-	"encoding/base64"
-	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	multierror "github.com/hashicorp/go-multierror"
+	"github.com/pkg/errors"
 	"github.com/solefaucet/btcwall-api/models"
 )
 
-type idPayload struct {
-	PublisherID int64  `json:"publisher_id"`
-	SiteID      int64  `json:"site_id"`
-	UserID      int64  `json:"user_id"`
-	TrackID     string `json:"track_id"`
-}
-
 // IDParserMiddleware parse publisher_id, site_id, user_id from query
-func IDParserMiddleware(key string) gin.HandlerFunc {
+func IDParserMiddleware(key, offerwallName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		b64Payload := c.Query(key)
-		data, err := base64.StdEncoding.DecodeString(b64Payload)
+		publisherID, siteID, userID, trackID, err := parseIDCombination(c.Query(key), offerwallName)
 		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"event":                 models.LogEventParseIDCombination,
-				"error":                 err.Error(),
-				"base64_id_combination": b64Payload,
-			}).Info("cannot base64 decode id combination")
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		var payload idPayload
-		if err := json.Unmarshal(data, &payload); err != nil {
-			logrus.WithFields(logrus.Fields{
-				"event":          models.LogEventParseIDCombination,
-				"id_combination": string(data),
-				"error":          err.Error(),
-			}).Info("cannot parse id combination")
-			c.AbortWithError(http.StatusBadRequest, err)
-			return
-		}
-
-		c.Set("publisher_id", payload.PublisherID)
-		c.Set("site_id", payload.SiteID)
-		c.Set("user_id", payload.UserID)
-		c.Set("track_id", payload.TrackID)
+		c.Set("publisher_id", publisherID)
+		c.Set("site_id", siteID)
+		c.Set("user_id", userID)
+		c.Set("track_id", trackID)
 
 		c.Next()
 	}
+}
+
+func parseIDCombination(idCombination, offerwallName string) (publisherID, siteID, userID int64, trackID string, err error) {
+	fields := strings.Split(idCombination, "_")
+	if len(fields) != 4 {
+		err = fmt.Errorf("invalid id combination format %v", idCombination)
+		return
+	}
+
+	errs := &multierror.Error{}
+	appendErrorIfNotNil := func(err error) {
+		if err != nil {
+			errs = multierror.Append(errs, nil)
+		}
+	}
+
+	publisherID, err = strconv.ParseInt(fields[0], 10, 64)
+	appendErrorIfNotNil(errors.Wrapf(err, "cannot parse publisher_id %v", fields[0]))
+
+	siteID, err = strconv.ParseInt(fields[1], 10, 64)
+	appendErrorIfNotNil(errors.Wrapf(err, "cannot parse site_id %v", fields[1]))
+
+	userID, err = strconv.ParseInt(fields[2], 10, 64)
+	appendErrorIfNotNil(errors.Wrapf(err, "cannot parse user_id %v", fields[2]))
+
+	trackID = fields[3]
+
+	entry := logrus.WithFields(logrus.Fields{
+		"event":          models.LogEventParseIDCombination,
+		"offerwall_name": offerwallName,
+		"id_combination": idCombination,
+		"publisher_id":   publisherID,
+		"site_id":        siteID,
+		"user_id":        userID,
+		"track_id":       trackID,
+	})
+
+	err = errs.ErrorOrNil()
+	if err != nil {
+		entry.WithField("error", err.Error()).Warn("cannot parse id combination")
+		return
+	}
+
+	entry.Info("succedd to parse id combination")
+	return
 }

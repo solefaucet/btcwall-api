@@ -83,43 +83,43 @@ func main() {
 	offerwallRouter := router.Group("/offerwalls")
 
 	offerwallRouter.GET("/adgate",
-		middlewares.IDParserMiddleware("user_id"),
+		middlewares.IDParserMiddleware("user_id", models.OfferwallNameAdgate),
 		middlewares.AdgateAuthRequired(config.Offerwalls.Adgate.WhitelistIPs),
 		offerwallHandler.AdgateCallback(),
 	)
 
 	offerwallRouter.GET("/adscend",
-		middlewares.IDParserMiddleware("user_id"),
+		middlewares.IDParserMiddleware("user_id", models.OfferwallNameAdscend),
 		middlewares.AdscendAuthRequired(config.Offerwalls.Adscend.WhitelistIPs),
 		offerwallHandler.AdscendCallback(),
 	)
 
 	offerwallRouter.GET("/kiwiwall",
-		middlewares.IDParserMiddleware("sub_id"),
+		middlewares.IDParserMiddleware("sub_id", models.OfferwallNameKiwiwall),
 		middlewares.KiwiwallAuthRequired(config.Offerwalls.Kiwiwall.WhitelistIPs, config.Offerwalls.Kiwiwall.SecretKey),
 		offerwallHandler.KiwiwallCallback(),
 	)
 
 	offerwallRouter.GET("/personaly",
-		middlewares.IDParserMiddleware("user_id"),
+		middlewares.IDParserMiddleware("user_id", models.OfferwallNamePersonaly),
 		middlewares.PersonalyAuthRequired(config.Offerwalls.Personaly.WhitelistIPs, config.Offerwalls.Personaly.AppHash, config.Offerwalls.Personaly.SecretKey),
 		offerwallHandler.PersonalyCallback(),
 	)
 
 	offerwallRouter.GET("/pointclicktrack",
-		middlewares.IDParserMiddleware("sid1"),
+		middlewares.IDParserMiddleware("sid1", models.OfferwallNamePointClickTrack),
 		middlewares.PointClickTrackAuthRequired(config.Offerwalls.PointClickTrack.WhitelistIPs),
 		offerwallHandler.PointClickTrackCallback(),
 	)
 
 	offerwallRouter.GET("/ptcwall",
-		middlewares.IDParserMiddleware("usr"),
+		middlewares.IDParserMiddleware("usr", models.OfferwallNamePtcwall),
 		middlewares.PtcwallAuthRequired(config.Offerwalls.Ptcwall.WhitelistIPs, config.Offerwalls.Ptcwall.PostbackPassword),
 		offerwallHandler.PtcwallCallback(),
 	)
 
 	offerwallRouter.GET("/wannads",
-		middlewares.IDParserMiddleware("subId"),
+		middlewares.IDParserMiddleware("subId", models.OfferwallNameWannads),
 		middlewares.WannadsAuthRequired(config.Offerwalls.Wannads.SecretKey),
 		offerwallHandler.WannadsCallback(),
 	)
