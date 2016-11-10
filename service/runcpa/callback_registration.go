@@ -35,15 +35,20 @@ func (n Notifier) CallbackRegistration(trackID string) {
 	url := fmt.Sprintf("%s/%s", n.baseRegistrationCallbackURL, trackID)
 	resp, _, errs := gorequest.New().Get(url).End()
 	validStatusCode := resp.StatusCode >= 200 && resp.StatusCode < 300
+
+	entry := logrus.WithFields(logrus.Fields{
+		"event":            models.LogEventCallbackRuncpaRegistration,
+		"url":              url,
+		"http_status_code": resp.StatusCode,
+	})
+
 	if len(errs) != 0 || validStatusCode {
 		err := errors.Wrap(&multierror.Error{Errors: errs}, "fail to callback runcpa registration")
-		logrus.WithFields(logrus.Fields{
-			"event":            models.LogEventCallbackRuncpaRegistration,
-			"url":              url,
-			"http_status_code": resp.StatusCode,
-			"error":            err.Error(),
-		}).Warn("fail to callback runcpa registration")
+		entry.WithField("error", err.Error()).Warn("fail to callback runcpa registration")
+		return
 	}
+
+	entry.Info("succeed to callback runcpa registration")
 }
 
 // CallbackRevenueShare _
@@ -55,13 +60,18 @@ func (n Notifier) CallbackRevenueShare(trackID string, sum float64) {
 	url := fmt.Sprintf("%s/%s/%.8f", n.baseRevenueShareCallbackURL, trackID, sum)
 	resp, _, errs := gorequest.New().Get(url).End()
 	validStatusCode := resp.StatusCode >= 200 && resp.StatusCode < 300
+
+	entry := logrus.WithFields(logrus.Fields{
+		"event":            models.LogEventCallbackRuncpaRevenueShare,
+		"url":              url,
+		"http_status_code": resp.StatusCode,
+	})
+
 	if len(errs) != 0 || validStatusCode {
 		err := errors.Wrap(&multierror.Error{Errors: errs}, "fail to callback runcpa revenue share")
-		logrus.WithFields(logrus.Fields{
-			"event":            models.LogEventCallbackRuncpaRevenueShare,
-			"url":              url,
-			"http_status_code": resp.StatusCode,
-			"error":            err.Error(),
-		}).Warn("fail to callback runcpa revenue share")
+		entry.WithField("error", err.Error()).Warn("fail to callback runcpa revenue share")
+		return
 	}
+
+	entry.Info("succeed to callback runcpa revenue share")
 }
