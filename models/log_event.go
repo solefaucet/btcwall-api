@@ -14,4 +14,5 @@ const (
 	LogEventBlockProxy                 = "block proxy"
 	LogEventCallbackRuncpaRegistration = "callback runcpa registration"
 	LogEventCallbackRuncpaRevenueShare = "callback runcpa revenue share"
+	LogEventCreateUser                 = "create user"
 )

@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	"github.com/solefaucet/btcwall-api/models"
 	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
@@ -43,6 +45,12 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 			Address string `json:"address" binding:"required"`
 			TrackID string `json:"track_id"`
 		}{}
+
+		logrus.WithFields(logrus.Fields{
+			"event":    models.LogEventCreateUser,
+			"address":  payload.Address,
+			"track_id": payload.TrackID,
+		}).Debug("create user")
 
 		if err := c.BindJSON(&payload); err != nil {
 			return
