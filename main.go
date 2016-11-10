@@ -79,7 +79,7 @@ func main() {
 	)
 
 	// integrated with offerwalls
-	offerwallHandler := offerwalls.New(dal)
+	offerwallHandler := offerwalls.New(dal, runcpaNotifier.CallbackRevenueShare)
 	offerwallRouter := router.Group("/offerwalls")
 
 	offerwallRouter.GET("/adgate",
@@ -128,7 +128,7 @@ func main() {
 	v1Router := router.Group("/v1")
 
 	// v1 user handler
-	v1UserHandler := v1.NewUserHandler(dal)
+	v1UserHandler := v1.NewUserHandler(dal, runcpaNotifier.CallbackRegistration)
 	v1Router.POST("/users", proxyAuthRequiredMiddleware, v1UserHandler.CreateUser())           // create user
 	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser()) // retrieve user
 

@@ -11,13 +11,15 @@ import (
 
 // UserHandler _
 type UserHandler struct {
-	userStorage userStorage
+	userStorage          userStorage
+	callbackRegistration func(string)
 }
 
 // NewUserHandler _
-func NewUserHandler(userStorage userStorage) UserHandler {
+func NewUserHandler(userStorage userStorage, callbackRegistration func(string)) UserHandler {
 	return UserHandler{
-		userStorage: userStorage,
+		userStorage:          userStorage,
+		callbackRegistration: callbackRegistration,
 	}
 }
 
@@ -39,6 +41,7 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Address string `json:"address" binding:"required"`
+			TrackID string `json:"track_id"`
 		}{}
 
 		if err := c.BindJSON(&payload); err != nil {
@@ -60,6 +63,9 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusConflict)
 			return
 		}
+
+		// callback to runcpa
+		userHandler.callbackRegistration(payload.TrackID)
 
 		c.JSON(http.StatusCreated, user)
 	}

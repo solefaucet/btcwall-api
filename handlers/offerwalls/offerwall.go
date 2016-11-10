@@ -8,7 +8,8 @@ import (
 
 // OfferwallHandler _
 type OfferwallHandler struct {
-	offerwallWriter offerwallWriter
+	offerwallWriter      offerwallWriter
+	callbackRevenueShare func(string, float64)
 }
 
 type offerwallWriter interface {
@@ -17,9 +18,10 @@ type offerwallWriter interface {
 }
 
 // New create a offerwall handler
-func New(offerwallWriter offerwallWriter) OfferwallHandler {
+func New(offerwallWriter offerwallWriter, callbackRevenueShare func(string, float64)) OfferwallHandler {
 	return OfferwallHandler{
-		offerwallWriter: offerwallWriter,
+		offerwallWriter:      offerwallWriter,
+		callbackRevenueShare: callbackRevenueShare,
 	}
 }
 
@@ -29,6 +31,7 @@ func (o OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		"publisher_id":   offer.PublisherID,
 		"site_id":        offer.SiteID,
 		"user_id":        offer.UserID,
+		"track_id":       offer.TrackID,
 		"is_chargeback":  isChargeback,
 		"offerwall_name": offer.OfferwallName,
 		"amount":         offer.Amount,
@@ -44,9 +47,14 @@ func (o OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		}
 
 	case false:
-		if _, err := o.offerwallWriter.CreateOffer(offer); err != nil {
+		duplicated, err := o.offerwallWriter.CreateOffer(offer)
+		if err != nil {
 			entry.WithField("error", err.Error()).Error("fail to add offer")
 			return err
+		}
+
+		if !duplicated {
+			o.callbackRevenueShare(offer.TrackID, float64(offer.Amount)/1e8)
 		}
 	}
 
