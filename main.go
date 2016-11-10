@@ -28,6 +28,7 @@ func main() {
 	initializeLogging()
 	initializeRPCClient()
 	geo = must(geoip2.Open(config.Geo.Filename)).(*geoip2.Reader)
+	initializeRuncpaNotifier()
 	log.Println(spew.Sdump(config))
 
 	// watch configuration changed
