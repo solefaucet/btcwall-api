@@ -80,19 +80,19 @@ func (a *a25) set58(s []byte) error {
 // addresses. If ok is false, the address is invalid and the error value
 // may indicate why.
 func ValidateBitcoinAddress(address string) bool {
-	commonFields := logrus.Fields{
+	entry := logrus.WithFields(logrus.Fields{
 		"event":   models.LogEventValidateBitcoinAddress,
 		"address": address,
-	}
+	})
 
 	a58 := []byte(address)
 	var a a25
 	if err := a.set58(a58); err != nil {
-		logrus.WithFields(commonFields).WithField("error", err.Error()).Debug("fail to validate bitcoin address")
+		entry.WithField("error", err.Error()).Debug("fail to validate bitcoin address")
 		return false
 	}
-	if a.version() != 0 {
-		logrus.WithFields(commonFields).WithField("error", "version is not 0").Debug("fail to validate bitcoin address")
+	if version := a.version(); version != 0x00 && a.version() != 0x05 {
+		entry.WithField("version", version).Debug("bitcoin address version should be either 0 or 5")
 		return false
 	}
 	return a.embeddedChecksum() == a.computeChecksum()
