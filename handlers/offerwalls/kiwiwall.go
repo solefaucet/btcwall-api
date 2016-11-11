@@ -26,11 +26,13 @@ func (o OfferwallHandler) KiwiwallCallback() gin.HandlerFunc {
 		publisherID := c.MustGet("publisher_id").(int64)
 		siteID := c.MustGet("site_id").(int64)
 		userID := c.MustGet("user_id").(int64)
+		trackID := c.MustGet("track_id").(string)
 
 		offer := rpcmodels.Offer{
 			PublisherID:   publisherID,
 			SiteID:        siteID,
 			UserID:        userID,
+			TrackID:       trackID,
 			OfferName:     payload.OfferName,
 			OfferwallName: models.OfferwallNameKiwiwall,
 			TransactionID: payload.TransactionID,
