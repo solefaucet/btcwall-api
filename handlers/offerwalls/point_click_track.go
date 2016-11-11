@@ -15,7 +15,7 @@ import (
 func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount         float64 `form:"commission" binding:"required"`
+			Amount         float64 `form:"wallad_currency_amount" binding:"required"`
 			OfferID        string  `form:"campaign_id" binding:"required"`
 			SID            string  `form:"sid1" binding:"required"`
 			OfferName      string  `form:"campaign_name"`
