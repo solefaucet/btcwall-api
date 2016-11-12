@@ -7,16 +7,10 @@ import (
 
 // offer status
 const (
-	OfferStatusPending = iota
-	OfferStatusCharged
-	OfferStatusChargeback
+	OfferStatusPending    = "pending"
+	OfferStatusCharged    = "charged"
+	OfferStatusChargeback = "chargeback"
 )
-
-var offerStatusMapping = map[int]string{
-	OfferStatusPending:    "pending",
-	OfferStatusCharged:    "charged",
-	OfferStatusChargeback: "chargeback",
-}
 
 // Offer model
 type Offer struct {
@@ -29,7 +23,7 @@ type Offer struct {
 	TransactionID string    `db:"transaction_id"`
 	TrackID       string    `db:"track_id"`
 	Amount        int64     `db:"amount"`
-	Status        int       `db:"status"`
+	Status        string    `db:"status"`
 	CreatedAt     time.Time `db:"created_at"`
 	UpdatedAt     time.Time `db:"updated_at"`
 }
@@ -45,7 +39,7 @@ func (o Offer) MarshalJSON() ([]byte, error) {
 		"offerwall_name": o.OfferwallName,
 		"transaction_id": o.TransactionID,
 		"amount":         float64(o.Amount) / 1e8,
-		"status":         offerStatusMapping[o.Status],
+		"status":         o.Status,
 		"created_at":     o.CreatedAt,
 		"updated_at":     o.UpdatedAt,
 	})
