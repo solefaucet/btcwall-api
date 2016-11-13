@@ -6,7 +6,7 @@ const (
 	OfferwallNameAdscend         = "Adscend"
 	OfferwallNameKiwiwall        = "Kiwiwall"
 	OfferwallNamePersonaly       = "Personaly"
-	OfferwallNamePointClickTrack = "PointClickTrack"
+	OfferwallNamePointClickTrack = "AdWall"
 	OfferwallNamePtcwall         = "Ptcwall"
 	OfferwallNameWannads         = "Wannads"
 )
