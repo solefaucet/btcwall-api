@@ -11,6 +11,7 @@ type User struct {
 	Address        string    `db:"address" json:"address"`
 	Balance        int64     `db:"balance" json:"balance"`
 	PendingBalance int64     `db:"pending_balance" json:"pending_balance"`
+	TrackID        string    `db:"track_id" json:"track_id"`
 	CreatedAt      time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt      time.Time `db:"updated_at" json:"updated_at"`
 }
@@ -22,6 +23,7 @@ func (u User) MarshalJSON() ([]byte, error) {
 		"address":         u.Address,
 		"balance":         float64(u.Balance) / 1e8,
 		"pending_balance": float64(u.PendingBalance) / 1e8,
+		"track_id":        u.TrackID,
 		"created_at":      u.CreatedAt,
 		"updated_at":      u.UpdatedAt,
 	})

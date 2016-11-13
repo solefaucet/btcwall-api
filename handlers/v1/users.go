@@ -35,7 +35,7 @@ type userReader interface {
 }
 
 type userWriter interface {
-	CreateUser(address string) (*rpcmodels.User, error)
+	CreateUser(address, trackID string) (*rpcmodels.User, error)
 }
 
 // CreateUser creates user, response with user info
@@ -61,7 +61,7 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		user, err := userHandler.userStorage.CreateUser(payload.Address)
+		user, err := userHandler.userStorage.CreateUser(payload.Address, payload.TrackID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

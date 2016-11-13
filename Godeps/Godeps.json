@@ -197,7 +197,7 @@
 		},
 		{
 			"ImportPath": "github.com/solefaucet/btcwall-rpc-model",
-			"Rev": "a8ca8e52260091934d855ebd1b3ea03ec6f0d7f5"
+			"Rev": "a7e762b274392f95d9278a68a4747c3cf893b47a"
 		},
 		{
 			"ImportPath": "github.com/spf13/afero",

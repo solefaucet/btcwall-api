@@ -38,7 +38,7 @@ type stub struct {
 
 	// user
 	GetUser    func(address string) (*rpcmodels.User, error)
-	CreateUser func(address string) (*rpcmodels.User, error)
+	CreateUser func(address, trackID string) (*rpcmodels.User, error)
 
 	// withdrawals
 	GetNumberOfUserWithdrawalsByUserID           func(userID int64) (int64, error)
@@ -108,8 +108,8 @@ func (dataAccessLayer) GetUser(address string) (*rpcmodels.User, error) {
 	return remote.GetUser(address)
 }
 
-func (dataAccessLayer) CreateUser(address string) (*rpcmodels.User, error) {
-	return remote.CreateUser(address)
+func (dataAccessLayer) CreateUser(address, trackID string) (*rpcmodels.User, error) {
+	return remote.CreateUser(address, trackID)
 }
 
 func (dataAccessLayer) GetUserWithdrawalsByUserID(userID, limit, offset int64) ([]rpcmodels.UserWithdrawal, error) {
