@@ -161,7 +161,7 @@ func main() {
 	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
 	v1WithdrawalRouter := v1Router.Group("/withdrawals")
 	v1WithdrawalRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1WithdrawalHandler.UserWithdrawalHandler())
-	v1WithdrawalRouter.GET("/publisher/:publisher_id", publisherAuthRequiredMiddleware, v1WithdrawalHandler.PublisherWithdrawalHandler())
+	v1WithdrawalRouter.GET("/publisher/:publisher_id", v1WithdrawalHandler.PublisherWithdrawalHandler())
 
 	// start server
 	logrus.WithFields(logrus.Fields{
