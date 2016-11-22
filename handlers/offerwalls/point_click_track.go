@@ -48,7 +48,7 @@ func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 		if isChargeback {
 			logrus.WithFields(logrus.Fields{
 				"event":     "chargeback",
-				"offerwall": "point_click_track",
+				"offerwall": offer.OfferwallName,
 				"reason":    payload.ReversalReason,
 			}).Info("chargeback point click track")
 		}
