@@ -57,6 +57,26 @@ func (publisherHandler PublisherHandler) RetrievePublisher() gin.HandlerFunc {
 	}
 }
 
+// RetrievePublisherByEmail response with publisher info
+func (publisherHandler PublisherHandler) RetrievePublisherByEmail() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		email := c.Param("email")
+		publisher, err := publisherHandler.publisherStorage.GetPublisher(email)
+
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		if publisher == nil {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		c.JSON(http.StatusOK, publisher)
+	}
+}
+
 // CreatePublisher creates publisher
 func (publisherHandler PublisherHandler) CreatePublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {

@@ -137,6 +137,7 @@ func main() {
 	publisherHandler := v1.NewPublisherHandler(dal)
 	v1Router.POST("/publishers", publisherHandler.CreatePublisher())                                                 // create publisher account
 	v1Router.GET("/publishers/:publisher_id", publisherAuthRequiredMiddleware, publisherHandler.RetrievePublisher()) // check publisher info
+	v1Router.GET("/publishers/:email", publisherHandler.RetrievePublisherByEmail())                                  // get publisher info
 
 	// v1 site handler
 	v1SiteHandler := v1.NewSiteHandler(dal)
