@@ -27,6 +27,9 @@ type stub struct {
 	CreateOffer               func(offer rpcmodels.Offer) (duplicated bool, _ error)
 	ChargebackOffer           func(offer rpcmodels.Offer) (alreadyChargeback bool, _ error)
 
+	GetNumberOfOffersByPublisherID func(publisherID int64) (int64, error)
+	GetOffersByPublisherID         func(publisherID, limit, offset int64) ([]rpcmodels.Offer, error)
+
 	// publisher
 	GetPublisher    func(email string) (*rpcmodels.Publisher, error)
 	CreatePublisher func(email, password, address string) (*rpcmodels.Publisher, error)
@@ -68,12 +71,20 @@ func (dataAccessLayer) GetNumberOfOffersBySiteID(siteID int64) (int64, error) {
 	return remote.GetNumberOfOffersBySiteID(siteID)
 }
 
+func (dataAccessLayer) GetNumberOfOffersByPublisherID(publisherID int64) (int64, error) {
+	return remote.GetNumberOfOffersByPublisherID(publisherID)
+}
+
 func (dataAccessLayer) GetOffersByUserID(userID, limit, offset int64) ([]rpcmodels.Offer, error) {
 	return remote.GetOffersByUserID(userID, limit, offset)
 }
 
 func (dataAccessLayer) GetOffersBySiteID(siteID, limit, offset int64) ([]rpcmodels.Offer, error) {
 	return remote.GetOffersBySiteID(siteID, limit, offset)
+}
+
+func (dataAccessLayer) GetOffersByPublisherID(publisherID, limit, offset int64) ([]rpcmodels.Offer, error) {
+	return remote.GetOffersByPublisherID(publisherID, limit, offset)
 }
 
 func (dataAccessLayer) CreateOffer(offer rpcmodels.Offer) (duplicated bool, _ error) {

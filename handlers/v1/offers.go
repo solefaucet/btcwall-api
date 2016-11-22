@@ -30,6 +30,9 @@ type offerReader interface {
 
 	GetNumberOfOffersBySiteID(siteID int64) (int64, error)
 	GetOffersBySiteID(siteID, limit, offset int64) ([]rpcmodels.Offer, error)
+
+	GetNumberOfOffersByPublisherID(publisherID int64) (int64, error)
+	GetOffersByPublisherID(publisherID, limit, offset int64) ([]rpcmodels.Offer, error)
 }
 
 // UserOfferHandler _
@@ -94,6 +97,39 @@ func (o OfferHandler) SiteOfferHandler() gin.HandlerFunc {
 		}
 
 		offers, err := o.offerReader.GetOffersBySiteID(siteID, payload.Limit, payload.Offset)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, paginationResult{
+			Count: count,
+			Data:  offers,
+		})
+	}
+}
+
+// RetrievePublisherOffers _
+func (o OfferHandler) RetrievePublisherOffers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		payload := paginationPayload{}
+		if err := c.BindWith(&payload, binding.Form); err != nil {
+			return
+		}
+
+		publisherID, err := strconv.ParseInt(c.Param("publisher_id"), 10, 64)
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+
+		count, err := o.offerReader.GetNumberOfOffersByPublisherID(publisherID)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		offers, err := o.offerReader.GetOffersByPublisherID(publisherID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

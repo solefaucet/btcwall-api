@@ -155,6 +155,7 @@ func main() {
 	v1OfferRouter := v1Router.Group("/offers")
 	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.UserOfferHandler())     // get offers filter by user_id
 	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.SiteOfferHandler()) // get offers filter by site_id
+	v1OfferRouter.GET("/publisher/:publisher_id", v1OfferHandler.RetrievePublisherOffers())                 // get offers filter by publisher_id
 
 	// v1 withdrawals
 	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
