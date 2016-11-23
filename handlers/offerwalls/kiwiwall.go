@@ -10,7 +10,7 @@ import (
 )
 
 // KiwiwallCallback handles kiwiwall callback
-func (o OfferwallHandler) KiwiwallCallback() gin.HandlerFunc {
+func (h OfferwallHandler) KiwiwallCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount        float64 `form:"amount" binding:"required"`
@@ -39,7 +39,7 @@ func (o OfferwallHandler) KiwiwallCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Status == 2); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Status == 2); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

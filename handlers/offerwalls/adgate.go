@@ -10,7 +10,7 @@ import (
 )
 
 // AdgateCallback handles adgate callback
-func (o OfferwallHandler) AdgateCallback() gin.HandlerFunc {
+func (h OfferwallHandler) AdgateCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount        float64 `form:"point_value" binding:"required"`
@@ -39,7 +39,7 @@ func (o OfferwallHandler) AdgateCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Status == 0); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Status == 0); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

@@ -34,11 +34,11 @@ type publisherWriter interface {
 }
 
 // RetrievePublisher response with publisher info
-func (publisherHandler PublisherHandler) RetrievePublisher() gin.HandlerFunc {
+func (h PublisherHandler) RetrievePublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 
-		publisher, err := publisherHandler.publisherReader.GetPublisher(authToken.Email)
+		publisher, err := h.publisherReader.GetPublisher(authToken.Email)
 
 		if err != nil || publisher == nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
@@ -55,10 +55,10 @@ func (publisherHandler PublisherHandler) RetrievePublisher() gin.HandlerFunc {
 }
 
 // RetrievePublisherByEmail response with publisher info
-func (publisherHandler PublisherHandler) RetrievePublisherByEmail() gin.HandlerFunc {
+func (h PublisherHandler) RetrievePublisherByEmail() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		email := c.Param("email")
-		publisher, err := publisherHandler.publisherReader.GetPublisher(email)
+		publisher, err := h.publisherReader.GetPublisher(email)
 
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
@@ -75,7 +75,7 @@ func (publisherHandler PublisherHandler) RetrievePublisherByEmail() gin.HandlerF
 }
 
 // CreatePublisher creates publisher
-func (publisherHandler PublisherHandler) CreatePublisher() gin.HandlerFunc {
+func (h PublisherHandler) CreatePublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Email    string `json:"email" binding:"required,email"`
@@ -102,7 +102,7 @@ func (publisherHandler PublisherHandler) CreatePublisher() gin.HandlerFunc {
 		payload.Password = string(password)
 
 		// create publisher
-		publisher, err := publisherHandler.publisherWriter.CreatePublisher(payload.Email, payload.Password, payload.Address)
+		publisher, err := h.publisherWriter.CreatePublisher(payload.Email, payload.Password, payload.Address)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

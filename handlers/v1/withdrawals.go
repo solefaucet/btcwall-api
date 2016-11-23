@@ -30,7 +30,7 @@ func NewWithdrawalHandler(withdrawalReader withdrawalReader) WithdrawalHandler {
 }
 
 // RetrieveWithdrawalsByUser _
-func (w WithdrawalHandler) RetrieveWithdrawalsByUser() gin.HandlerFunc {
+func (h WithdrawalHandler) RetrieveWithdrawalsByUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -43,13 +43,13 @@ func (w WithdrawalHandler) RetrieveWithdrawalsByUser() gin.HandlerFunc {
 			return
 		}
 
-		count, err := w.withdrawalReader.GetNumberOfUserWithdrawalsByUserID(userID)
+		count, err := h.withdrawalReader.GetNumberOfUserWithdrawalsByUserID(userID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		withdrawals, err := w.withdrawalReader.GetUserWithdrawalsByUserID(userID, payload.Limit, payload.Offset)
+		withdrawals, err := h.withdrawalReader.GetUserWithdrawalsByUserID(userID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -63,7 +63,7 @@ func (w WithdrawalHandler) RetrieveWithdrawalsByUser() gin.HandlerFunc {
 }
 
 // RetrieveWithdrawalsByPublisher _
-func (w WithdrawalHandler) RetrieveWithdrawalsByPublisher() gin.HandlerFunc {
+func (h WithdrawalHandler) RetrieveWithdrawalsByPublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -76,13 +76,13 @@ func (w WithdrawalHandler) RetrieveWithdrawalsByPublisher() gin.HandlerFunc {
 			return
 		}
 
-		count, err := w.withdrawalReader.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
+		count, err := h.withdrawalReader.GetNumberOfPublisherWithdrawalsByPublisherID(publisherID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		withdrawals, err := w.withdrawalReader.GetPublisherWithdrawalsByPublisherID(publisherID, payload.Limit, payload.Offset)
+		withdrawals, err := h.withdrawalReader.GetPublisherWithdrawalsByPublisherID(publisherID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

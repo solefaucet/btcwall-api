@@ -10,7 +10,7 @@ import (
 )
 
 // WannadsCallback handles adgate callback
-func (o OfferwallHandler) WannadsCallback() gin.HandlerFunc {
+func (h OfferwallHandler) WannadsCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount        float64 `form:"reward" binding:"required"`
@@ -39,7 +39,7 @@ func (o OfferwallHandler) WannadsCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Status == 2); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Status == 2); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

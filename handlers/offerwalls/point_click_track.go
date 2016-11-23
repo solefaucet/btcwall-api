@@ -12,7 +12,7 @@ import (
 )
 
 // PointClickTrackCallback handles pointclicktrack callback
-func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
+func (h OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount         float64 `form:"wallad_currency_amount" binding:"required"`
@@ -53,7 +53,7 @@ func (o OfferwallHandler) PointClickTrackCallback() gin.HandlerFunc {
 			}).Info("chargeback point click track")
 		}
 
-		if err := o.handleOfferCallback(offer, isChargeback); err != nil {
+		if err := h.handleOfferCallback(offer, isChargeback); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

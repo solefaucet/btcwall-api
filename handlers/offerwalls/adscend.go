@@ -10,7 +10,7 @@ import (
 )
 
 // AdscendCallback handles adscend callback
-func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
+func (h OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount        float64 `form:"amount" binding:"required"`
@@ -38,7 +38,7 @@ func (o OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Amount <= 0); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Amount <= 0); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

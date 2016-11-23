@@ -32,7 +32,7 @@ type siteReader interface {
 }
 
 // RetrieveSite _
-func (s SiteHandler) RetrieveSite() gin.HandlerFunc {
+func (h SiteHandler) RetrieveSite() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		siteID, err := strconv.ParseInt(c.Param("site_id"), 10, 64)
 		if err != nil {
@@ -40,7 +40,7 @@ func (s SiteHandler) RetrieveSite() gin.HandlerFunc {
 			return
 		}
 
-		site, err := s.siteReader.GetSite(siteID)
+		site, err := h.siteReader.GetSite(siteID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -56,11 +56,11 @@ func (s SiteHandler) RetrieveSite() gin.HandlerFunc {
 }
 
 // RetrieveSites _
-func (s SiteHandler) RetrieveSites() gin.HandlerFunc {
+func (h SiteHandler) RetrieveSites() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 
-		sites, err := s.siteReader.GetSitesByPublisherID(authToken.PublisherID)
+		sites, err := h.siteReader.GetSitesByPublisherID(authToken.PublisherID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -71,7 +71,7 @@ func (s SiteHandler) RetrieveSites() gin.HandlerFunc {
 }
 
 // CreateSite _
-func (s SiteHandler) CreateSite() gin.HandlerFunc {
+func (h SiteHandler) CreateSite() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			SiteName string `json:"site_name" binding:"required"`
@@ -82,7 +82,7 @@ func (s SiteHandler) CreateSite() gin.HandlerFunc {
 		}
 
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
-		if err := s.siteWriter.CreateSite(authToken.PublisherID, payload.SiteName, payload.SiteURL); err != nil {
+		if err := h.siteWriter.CreateSite(authToken.PublisherID, payload.SiteName, payload.SiteURL); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

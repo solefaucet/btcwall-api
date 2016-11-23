@@ -11,7 +11,7 @@ import (
 )
 
 // PersonalyCallback handles personaly callback
-func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
+func (h OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount    float64 `form:"amount" binding:"required,gt=0"`
@@ -40,7 +40,7 @@ func (o OfferwallHandler) PersonalyCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Amount < 0); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Amount < 0); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}

@@ -36,7 +36,7 @@ type offerReader interface {
 }
 
 // RetrieveOffersByUser _
-func (o OfferHandler) RetrieveOffersByUser() gin.HandlerFunc {
+func (h OfferHandler) RetrieveOffersByUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -49,13 +49,13 @@ func (o OfferHandler) RetrieveOffersByUser() gin.HandlerFunc {
 			return
 		}
 
-		count, err := o.offerReader.GetNumberOfOffersByUserID(userID)
+		count, err := h.offerReader.GetNumberOfOffersByUserID(userID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		offers, err := o.offerReader.GetOffersByUserID(userID, payload.Limit, payload.Offset)
+		offers, err := h.offerReader.GetOffersByUserID(userID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -69,7 +69,7 @@ func (o OfferHandler) RetrieveOffersByUser() gin.HandlerFunc {
 }
 
 // RetrieveOffersBySite _
-func (o OfferHandler) RetrieveOffersBySite() gin.HandlerFunc {
+func (h OfferHandler) RetrieveOffersBySite() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -83,20 +83,20 @@ func (o OfferHandler) RetrieveOffersBySite() gin.HandlerFunc {
 		}
 
 		// check if authorized
-		site, _ := o.siteReader.GetSite(siteID)
+		site, _ := h.siteReader.GetSite(siteID)
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 		if site.PublisherID != authToken.PublisherID {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		count, err := o.offerReader.GetNumberOfOffersBySiteID(siteID)
+		count, err := h.offerReader.GetNumberOfOffersBySiteID(siteID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		offers, err := o.offerReader.GetOffersBySiteID(siteID, payload.Limit, payload.Offset)
+		offers, err := h.offerReader.GetOffersBySiteID(siteID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -110,7 +110,7 @@ func (o OfferHandler) RetrieveOffersBySite() gin.HandlerFunc {
 }
 
 // RetrieveOffersByPublisher _
-func (o OfferHandler) RetrieveOffersByPublisher() gin.HandlerFunc {
+func (h OfferHandler) RetrieveOffersByPublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -123,13 +123,13 @@ func (o OfferHandler) RetrieveOffersByPublisher() gin.HandlerFunc {
 			return
 		}
 
-		count, err := o.offerReader.GetNumberOfOffersByPublisherID(publisherID)
+		count, err := h.offerReader.GetNumberOfOffersByPublisherID(publisherID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		offers, err := o.offerReader.GetOffersByPublisherID(publisherID, payload.Limit, payload.Offset)
+		offers, err := h.offerReader.GetOffersByPublisherID(publisherID, payload.Limit, payload.Offset)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

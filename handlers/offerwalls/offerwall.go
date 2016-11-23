@@ -25,7 +25,7 @@ func New(offerwallWriter offerwallWriter, callbackRevenueShare func(string, floa
 	}
 }
 
-func (o OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargeback bool) error {
+func (h OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargeback bool) error {
 	entry := logrus.WithFields(logrus.Fields{
 		"event":          models.LogEventHandleOfferwallCallback,
 		"publisher_id":   offer.PublisherID,
@@ -41,20 +41,20 @@ func (o OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 
 	switch isChargeback {
 	case true:
-		if _, err := o.offerwallWriter.ChargebackOffer(offer); err != nil {
+		if _, err := h.offerwallWriter.ChargebackOffer(offer); err != nil {
 			entry.WithField("error", err.Error()).Error("fail to chargeback offer")
 			return err
 		}
 
 	case false:
-		duplicated, err := o.offerwallWriter.CreateOffer(offer)
+		duplicated, err := h.offerwallWriter.CreateOffer(offer)
 		if err != nil {
 			entry.WithField("error", err.Error()).Error("fail to add offer")
 			return err
 		}
 
 		if !duplicated {
-			o.callbackRevenueShare(offer.TrackID, float64(offer.Amount)/1e8)
+			h.callbackRevenueShare(offer.TrackID, float64(offer.Amount)/1e8)
 		}
 	}
 

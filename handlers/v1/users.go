@@ -41,7 +41,7 @@ type runcpaRegistrationNotifier interface {
 }
 
 // CreateUser creates user, response with user info
-func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
+func (h UserHandler) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Address string `json:"address" binding:"required"`
@@ -63,7 +63,7 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		user, err := userHandler.userWriter.CreateUser(payload.Address, payload.TrackID)
+		user, err := h.userWriter.CreateUser(payload.Address, payload.TrackID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -75,18 +75,18 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 		}
 
 		// callback to runcpa
-		userHandler.runcpaRegistrationNotifier.CallbackRegistration(payload.TrackID)
+		h.runcpaRegistrationNotifier.CallbackRegistration(payload.TrackID)
 
 		c.JSON(http.StatusCreated, user)
 	}
 }
 
 // RetrieveUser response with user info
-func (userHandler UserHandler) RetrieveUser() gin.HandlerFunc {
+func (h UserHandler) RetrieveUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		address := c.Param("address")
 
-		user, err := userHandler.userReader.GetUser(address)
+		user, err := h.userReader.GetUser(address)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

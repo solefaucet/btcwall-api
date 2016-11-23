@@ -11,7 +11,7 @@ import (
 )
 
 // PtcwallCallback handles kiwiwall callback
-func (o OfferwallHandler) PtcwallCallback() gin.HandlerFunc {
+func (h OfferwallHandler) PtcwallCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
 			Amount float64 `form:"r" binding:"required"`
@@ -38,7 +38,7 @@ func (o OfferwallHandler) PtcwallCallback() gin.HandlerFunc {
 			Amount:        int64(payload.Amount),
 		}
 
-		if err := o.handleOfferCallback(offer, payload.Status == 2); err != nil {
+		if err := h.handleOfferCallback(offer, payload.Status == 2); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
