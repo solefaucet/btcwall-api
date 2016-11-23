@@ -80,7 +80,7 @@ func main() {
 	)
 
 	// integrated with offerwalls
-	offerwallHandler := offerwalls.New(dal, runcpaNotifier.CallbackRevenueShare)
+	offerwallHandler := offerwalls.New(dal, runcpaNotifier)
 	offerwallRouter := router.Group("/offerwalls")
 
 	offerwallRouter.GET("/adgate",

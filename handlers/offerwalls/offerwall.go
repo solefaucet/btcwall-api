@@ -8,8 +8,8 @@ import (
 
 // OfferwallHandler _
 type OfferwallHandler struct {
-	offerwallWriter      offerwallWriter
-	callbackRevenueShare func(string, float64)
+	offerwallWriter            offerwallWriter
+	runcpaRevenueShareNotifier runcpaRevenueShareNotifier
 }
 
 type offerwallWriter interface {
@@ -17,11 +17,15 @@ type offerwallWriter interface {
 	ChargebackOffer(offer rpcmodels.Offer) (alreadyChargeback bool, err error)
 }
 
+type runcpaRevenueShareNotifier interface {
+	CallbackRevenueShare(trackID string, amount float64)
+}
+
 // New create a offerwall handler
-func New(offerwallWriter offerwallWriter, callbackRevenueShare func(string, float64)) OfferwallHandler {
+func New(offerwallWriter offerwallWriter, runcpaRevenueShareNotifier runcpaRevenueShareNotifier) OfferwallHandler {
 	return OfferwallHandler{
-		offerwallWriter:      offerwallWriter,
-		callbackRevenueShare: callbackRevenueShare,
+		offerwallWriter:            offerwallWriter,
+		runcpaRevenueShareNotifier: runcpaRevenueShareNotifier,
 	}
 }
 
@@ -54,7 +58,7 @@ func (h OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		}
 
 		if !duplicated {
-			h.callbackRevenueShare(offer.TrackID, float64(offer.Amount)/1e8)
+			h.runcpaRevenueShareNotifier.CallbackRevenueShare(offer.TrackID, float64(offer.Amount)/1e8)
 		}
 	}
 
