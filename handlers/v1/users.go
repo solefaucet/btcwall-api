@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -44,18 +43,13 @@ type runcpaRegistrationNotifier interface {
 func (h UserHandler) CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Address string `json:"address" binding:"required"`
+			Address string `json:"address" binding:"required,btc_addr"`
 			TrackID string `json:"track_id"`
 		}{}
 		if err := c.BindJSON(&payload); err != nil {
 			return
 		}
-
 		payload.Address = strings.TrimSpace(payload.Address)
-		if !validateBitcoinAddress(payload.Address) {
-			c.AbortWithError(http.StatusBadRequest, fmt.Errorf("bitcoin address %s is invalid", payload.Address))
-			return
-		}
 
 		user, err := h.userWriter.CreateUser(payload.Address, payload.TrackID)
 		if err != nil {

@@ -80,18 +80,12 @@ func (h PublisherHandler) CreatePublisher() gin.HandlerFunc {
 		payload := struct {
 			Email    string `json:"email" binding:"required,email"`
 			Password string `json:"password" binding:"required"`
-			Address  string `json:"address" binding:"required"`
+			Address  string `json:"address" binding:"required,btc_addr"`
 		}{}
 		if err := c.BindJSON(&payload); err != nil {
 			return
 		}
-
-		// validate bitcoin address
 		payload.Address = strings.TrimSpace(payload.Address)
-		if !validateBitcoinAddress(payload.Address) {
-			c.AbortWithError(http.StatusBadRequest, fmt.Errorf("bitcoin address %s is invalid", payload.Address))
-			return
-		}
 
 		// hash password
 		password, err := bcrypt.GenerateFromPassword([]byte(payload.Password), bcrypt.DefaultCost)

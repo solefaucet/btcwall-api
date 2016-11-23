@@ -29,6 +29,7 @@ func main() {
 	initializeRPCClient()
 	geo = must(geoip2.Open(config.Geo.Filename)).(*geoip2.Reader)
 	initializeRuncpaNotifier()
+	initializeGinValidator()
 	log.Println(spew.Sdump(config))
 
 	// watch configuration changed
