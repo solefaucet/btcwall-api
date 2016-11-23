@@ -129,7 +129,7 @@ func main() {
 	v1Router := router.Group("/v1")
 
 	// v1 user handler
-	v1UserHandler := v1.NewUserHandler(dal, runcpaNotifier.CallbackRegistration)
+	v1UserHandler := v1.NewUserHandler(dal, dal, runcpaNotifier)
 	v1Router.POST("/users", proxyAuthRequiredMiddleware, v1UserHandler.CreateUser())           // create user
 	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser()) // retrieve user
 

@@ -5,29 +5,27 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/solefaucet/btcwall-api/models"
 	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
 )
 
 // UserHandler _
 type UserHandler struct {
-	userStorage          userStorage
-	callbackRegistration func(string)
+	userReader                 userReader
+	userWriter                 userWriter
+	runcpaRegistrationNotifier runcpaRegistrationNotifier
 }
 
 // NewUserHandler _
-func NewUserHandler(userStorage userStorage, callbackRegistration func(string)) UserHandler {
+func NewUserHandler(
+	userReader userReader, userWriter userWriter,
+	runcpaRegistrationNotifier runcpaRegistrationNotifier,
+) UserHandler {
 	return UserHandler{
-		userStorage:          userStorage,
-		callbackRegistration: callbackRegistration,
+		userReader:                 userReader,
+		userWriter:                 userWriter,
+		runcpaRegistrationNotifier: runcpaRegistrationNotifier,
 	}
-}
-
-type userStorage interface {
-	userReader
-	userWriter
 }
 
 type userReader interface {
@@ -36,6 +34,10 @@ type userReader interface {
 
 type userWriter interface {
 	CreateUser(address, trackID string) (*rpcmodels.User, error)
+}
+
+type runcpaRegistrationNotifier interface {
+	CallbackRegistration(trackID string)
 }
 
 // CreateUser creates user, response with user info
@@ -61,7 +63,7 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		user, err := userHandler.userStorage.CreateUser(payload.Address, payload.TrackID)
+		user, err := userHandler.userWriter.CreateUser(payload.Address, payload.TrackID)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -73,7 +75,7 @@ func (userHandler UserHandler) CreateUser() gin.HandlerFunc {
 		}
 
 		// callback to runcpa
-		userHandler.callbackRegistration(payload.TrackID)
+		userHandler.runcpaRegistrationNotifier.CallbackRegistration(payload.TrackID)
 
 		c.JSON(http.StatusCreated, user)
 	}
@@ -84,7 +86,7 @@ func (userHandler UserHandler) RetrieveUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		address := c.Param("address")
 
-		user, err := userHandler.userStorage.GetUser(address)
+		user, err := userHandler.userReader.GetUser(address)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
