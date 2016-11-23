@@ -31,6 +31,8 @@ func Logger(geo *geoip2.Reader) gin.HandlerFunc {
 			"method":           c.Request.Method,
 			"path":             c.Request.URL.Path,
 			"query":            c.Request.URL.Query().Encode(),
+			"X-Real-Ip":        c.Request.Header.Get("X-Real-Ip"),
+			"X-Forwarded-For":  c.Request.Header.Get("X-Forwarded-For"),
 			"http_status_code": status,
 			"response_time":    float64(time.Since(start).Nanoseconds()) / 1e6,
 			"ip":               ip,
