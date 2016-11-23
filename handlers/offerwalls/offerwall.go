@@ -1,6 +1,8 @@
 package offerwalls
 
 import (
+	"fmt"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/solefaucet/btcwall-api/models"
 	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
@@ -36,7 +38,7 @@ func (h OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		"site_id":        offer.SiteID,
 		"user_id":        offer.UserID,
 		"track_id":       offer.TrackID,
-		"is_chargeback":  isChargeback,
+		"is_chargeback":  fmt.Sprint(isChargeback),
 		"offerwall_name": offer.OfferwallName,
 		"amount":         offer.Amount,
 		"offer_name":     offer.OfferName,
