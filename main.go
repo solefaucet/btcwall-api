@@ -152,15 +152,15 @@ func main() {
 	// v1 offers
 	v1OfferHandler := v1.NewOfferHandler(dal, dal)
 	v1OfferRouter := v1Router.Group("/offers")
-	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.UserOfferHandler())     // get offers filter by user_id
-	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.SiteOfferHandler()) // get offers filter by site_id
-	v1OfferRouter.GET("/publisher/:publisher_id", v1OfferHandler.RetrievePublisherOffers())                 // get offers filter by publisher_id
+	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersByUser())     // get offers filter by user_id
+	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersBySite()) // get offers filter by site_id
+	v1OfferRouter.GET("/publisher/:publisher_id", v1OfferHandler.RetrieveOffersByPublisher())                   // get offers filter by publisher_id
 
 	// v1 withdrawals
 	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
 	v1WithdrawalRouter := v1Router.Group("/withdrawals")
-	v1WithdrawalRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1WithdrawalHandler.UserWithdrawalHandler())
-	v1WithdrawalRouter.GET("/publisher/:publisher_id", v1WithdrawalHandler.PublisherWithdrawalHandler())
+	v1WithdrawalRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1WithdrawalHandler.RetrieveWithdrawalsByUser())
+	v1WithdrawalRouter.GET("/publisher/:publisher_id", v1WithdrawalHandler.RetrieveWithdrawalsByPublisher())
 
 	// start server
 	logrus.WithFields(logrus.Fields{

@@ -35,8 +35,8 @@ type offerReader interface {
 	GetOffersByPublisherID(publisherID, limit, offset int64) ([]rpcmodels.Offer, error)
 }
 
-// UserOfferHandler _
-func (o OfferHandler) UserOfferHandler() gin.HandlerFunc {
+// RetrieveOffersByUser _
+func (o OfferHandler) RetrieveOffersByUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -68,8 +68,8 @@ func (o OfferHandler) UserOfferHandler() gin.HandlerFunc {
 	}
 }
 
-// SiteOfferHandler _
-func (o OfferHandler) SiteOfferHandler() gin.HandlerFunc {
+// RetrieveOffersBySite _
+func (o OfferHandler) RetrieveOffersBySite() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -109,8 +109,8 @@ func (o OfferHandler) SiteOfferHandler() gin.HandlerFunc {
 	}
 }
 
-// RetrievePublisherOffers _
-func (o OfferHandler) RetrievePublisherOffers() gin.HandlerFunc {
+// RetrieveOffersByPublisher _
+func (o OfferHandler) RetrieveOffersByPublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {

@@ -29,8 +29,8 @@ func NewWithdrawalHandler(withdrawalReader withdrawalReader) WithdrawalHandler {
 	}
 }
 
-// UserWithdrawalHandler _
-func (w WithdrawalHandler) UserWithdrawalHandler() gin.HandlerFunc {
+// RetrieveWithdrawalsByUser _
+func (w WithdrawalHandler) RetrieveWithdrawalsByUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
@@ -62,8 +62,8 @@ func (w WithdrawalHandler) UserWithdrawalHandler() gin.HandlerFunc {
 	}
 }
 
-// PublisherWithdrawalHandler _
-func (w WithdrawalHandler) PublisherWithdrawalHandler() gin.HandlerFunc {
+// RetrieveWithdrawalsByPublisher _
+func (w WithdrawalHandler) RetrieveWithdrawalsByPublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := paginationPayload{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
