@@ -130,31 +130,42 @@ func main() {
 
 	// v1 user handler
 	v1UserHandler := v1.NewUserHandler(dal, dal, runcpaNotifier)
-	v1Router.POST("/users", proxyAuthRequiredMiddleware, v1UserHandler.CreateUser())           // create user
-	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser()) // retrieve user
+	// create user
+	v1Router.POST("/users", proxyAuthRequiredMiddleware, v1UserHandler.CreateUser())
+	// retrieve user
+	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser())
 
 	// v1 publisher handler
 	publisherHandler := v1.NewPublisherHandler(dal, dal)
-	v1Router.POST("/publishers", publisherHandler.CreatePublisher())                // create publisher account
-	v1Router.GET("/publishers/:email", publisherHandler.RetrievePublisherByEmail()) // get publisher info
+	// create publisher account
+	v1Router.POST("/publishers", publisherHandler.CreatePublisher())
+	// get publisher info
+	v1Router.GET("/publishers/:email", publisherHandler.RetrievePublisherByEmail())
 
 	// v1 site handler
 	v1SiteHandler := v1.NewSiteHandler(dal, dal)
 	v1SiteRouter := v1Router.Group("/sites")
-	v1SiteRouter.POST("", publisherAuthRequiredMiddleware, v1SiteHandler.CreateSite())   // create site owned by publisher
-	v1SiteRouter.GET("", publisherAuthRequiredMiddleware, v1SiteHandler.RetrieveSites()) // get all sites owned by publisher
-	v1SiteRouter.GET("/:site_id", v1SiteHandler.RetrieveSite())                          // get one site
+	// create site owned by publisher
+	v1SiteRouter.POST("", publisherAuthRequiredMiddleware, v1SiteHandler.CreateSite())
+	// get all sites owned by publisher
+	v1SiteRouter.GET("", publisherAuthRequiredMiddleware, v1SiteHandler.RetrieveSites())
+	// get one site
+	v1SiteRouter.GET("/:site_id", v1SiteHandler.RetrieveSite())
 
 	// v1 auth token handler
 	authTokenHandler := v1.NewAuthTokenHandler(dal, dal)
-	v1Router.POST("/auth/publisher", authTokenHandler.CreateAuthToken()) // create auth token for access to publisher dashboard
+	// create auth token for access to publisher dashboard
+	v1Router.POST("/auth/publisher", authTokenHandler.CreateAuthToken())
 
 	// v1 offers
 	v1OfferHandler := v1.NewOfferHandler(dal, dal)
 	v1OfferRouter := v1Router.Group("/offers")
-	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersByUser())     // get offers filter by user_id
-	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersBySite()) // get offers filter by site_id
-	v1OfferRouter.GET("/publisher/:publisher_id", v1OfferHandler.RetrieveOffersByPublisher())                   // get offers filter by publisher_id
+	// get offers filter by user_id
+	v1OfferRouter.GET("/user/:user_id", proxyAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersByUser())
+	// get offers filter by site_id
+	v1OfferRouter.GET("/site/:site_id", publisherAuthRequiredMiddleware, v1OfferHandler.RetrieveOffersBySite())
+	// get offers filter by publisher_id
+	v1OfferRouter.GET("/publisher/:publisher_id", v1OfferHandler.RetrieveOffersByPublisher())
 
 	// v1 withdrawals
 	v1WithdrawalHandler := v1.NewWithdrawalHandler(dal)
