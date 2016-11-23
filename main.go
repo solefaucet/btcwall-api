@@ -139,7 +139,7 @@ func main() {
 	v1Router.GET("/publishers/:email", publisherHandler.RetrievePublisherByEmail()) // get publisher info
 
 	// v1 site handler
-	v1SiteHandler := v1.NewSiteHandler(dal)
+	v1SiteHandler := v1.NewSiteHandler(dal, dal)
 	v1SiteRouter := v1Router.Group("/sites")
 	v1SiteRouter.POST("", publisherAuthRequiredMiddleware, v1SiteHandler.CreateSite())   // create site owned by publisher
 	v1SiteRouter.GET("", publisherAuthRequiredMiddleware, v1SiteHandler.RetrieveSites()) // get all sites owned by publisher
