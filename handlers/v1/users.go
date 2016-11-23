@@ -2,7 +2,6 @@ package v1
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	rpcmodels "github.com/solefaucet/btcwall-rpc-model"
@@ -49,7 +48,6 @@ func (h UserHandler) CreateUser() gin.HandlerFunc {
 		if err := c.BindJSON(&payload); err != nil {
 			return
 		}
-		payload.Address = strings.TrimSpace(payload.Address)
 
 		user, err := h.userWriter.CreateUser(payload.Address, payload.TrackID)
 		if err != nil {

@@ -3,7 +3,6 @@ package v1
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -85,7 +84,6 @@ func (h PublisherHandler) CreatePublisher() gin.HandlerFunc {
 		if err := c.BindJSON(&payload); err != nil {
 			return
 		}
-		payload.Address = strings.TrimSpace(payload.Address)
 
 		// hash password
 		password, err := bcrypt.GenerateFromPassword([]byte(payload.Password), bcrypt.DefaultCost)
