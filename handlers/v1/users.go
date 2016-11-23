@@ -47,15 +47,9 @@ func (h UserHandler) CreateUser() gin.HandlerFunc {
 			Address string `json:"address" binding:"required"`
 			TrackID string `json:"track_id"`
 		}{}
-
 		if err := c.BindJSON(&payload); err != nil {
 			return
 		}
-		logrus.WithFields(logrus.Fields{
-			"event":    models.LogEventCreateUser,
-			"address":  payload.Address,
-			"track_id": payload.TrackID,
-		}).Debug("create user")
 
 		payload.Address = strings.TrimSpace(payload.Address)
 		if !validateBitcoinAddress(payload.Address) {
