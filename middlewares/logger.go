@@ -68,6 +68,7 @@ func getLocationFromIP(geo *geoip2.Reader, ip string) location {
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"event": models.LogEventGetGeoFromIP,
+			"ip":    ip,
 			"error": err.Error(),
 		}).Error("fail to get city information")
 		return loc
