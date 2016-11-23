@@ -134,7 +134,7 @@ func main() {
 	v1Router.GET("/users/:address", proxyAuthRequiredMiddleware, v1UserHandler.RetrieveUser()) // retrieve user
 
 	// v1 publisher handler
-	publisherHandler := v1.NewPublisherHandler(dal)
+	publisherHandler := v1.NewPublisherHandler(dal, dal)
 	v1Router.POST("/publishers", publisherHandler.CreatePublisher())                // create publisher account
 	v1Router.GET("/publishers/:email", publisherHandler.RetrievePublisherByEmail()) // get publisher info
 

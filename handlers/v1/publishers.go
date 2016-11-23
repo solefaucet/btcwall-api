@@ -13,19 +13,16 @@ import (
 
 // PublisherHandler _
 type PublisherHandler struct {
-	publisherStorage publisherStorage
+	publisherReader publisherReader
+	publisherWriter publisherWriter
 }
 
 // NewPublisherHandler _
-func NewPublisherHandler(publisherStorage publisherStorage) PublisherHandler {
+func NewPublisherHandler(publisherReader publisherReader, publisherWriter publisherWriter) PublisherHandler {
 	return PublisherHandler{
-		publisherStorage: publisherStorage,
+		publisherReader: publisherReader,
+		publisherWriter: publisherWriter,
 	}
-}
-
-type publisherStorage interface {
-	publisherReader
-	publisherWriter
 }
 
 type publisherReader interface {
@@ -41,7 +38,7 @@ func (publisherHandler PublisherHandler) RetrievePublisher() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authToken := c.MustGet("auth_token").(*rpcmodels.AuthToken)
 
-		publisher, err := publisherHandler.publisherStorage.GetPublisher(authToken.Email)
+		publisher, err := publisherHandler.publisherReader.GetPublisher(authToken.Email)
 
 		if err != nil || publisher == nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
@@ -61,7 +58,7 @@ func (publisherHandler PublisherHandler) RetrievePublisher() gin.HandlerFunc {
 func (publisherHandler PublisherHandler) RetrievePublisherByEmail() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		email := c.Param("email")
-		publisher, err := publisherHandler.publisherStorage.GetPublisher(email)
+		publisher, err := publisherHandler.publisherReader.GetPublisher(email)
 
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
@@ -105,7 +102,7 @@ func (publisherHandler PublisherHandler) CreatePublisher() gin.HandlerFunc {
 		payload.Password = string(password)
 
 		// create publisher
-		publisher, err := publisherHandler.publisherStorage.CreatePublisher(payload.Email, payload.Password, payload.Address)
+		publisher, err := publisherHandler.publisherWriter.CreatePublisher(payload.Email, payload.Password, payload.Address)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
