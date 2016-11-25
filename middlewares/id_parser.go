@@ -43,7 +43,7 @@ func parseIDCombination(idCombination, offerwallName string) (publisherID, siteI
 	errs := &multierror.Error{}
 	appendErrorIfNotNil := func(err error) {
 		if err != nil {
-			errs = multierror.Append(errs, nil)
+			errs = multierror.Append(errs, err)
 		}
 	}
 
