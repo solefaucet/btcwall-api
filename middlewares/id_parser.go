@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"net/http"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	multierror "github.com/hashicorp/go-multierror"
@@ -17,11 +15,7 @@ import (
 // IDParserMiddleware parse publisher_id, site_id, user_id from query
 func IDParserMiddleware(key, offerwallName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		publisherID, siteID, userID, trackID, err := parseIDCombination(c.Query(key), offerwallName)
-		if err != nil {
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
+		publisherID, siteID, userID, trackID, _ := parseIDCombination(c.Query(key), offerwallName)
 
 		c.Set("publisher_id", publisherID)
 		c.Set("site_id", siteID)
@@ -33,9 +27,16 @@ func IDParserMiddleware(key, offerwallName string) gin.HandlerFunc {
 }
 
 func parseIDCombination(idCombination, offerwallName string) (publisherID, siteID, userID int64, trackID string, err error) {
+	entry := logrus.WithFields(logrus.Fields{
+		"event":          models.LogEventParseIDCombination,
+		"offerwall_name": offerwallName,
+		"id_combination": idCombination,
+	})
+
 	fields := strings.Split(idCombination, "_")
 	if len(fields) != 4 {
 		err = fmt.Errorf("invalid id combination format %v", idCombination)
+		entry.WithField("error", err.Error()).Warn("invalid id combination format")
 		return
 	}
 
@@ -57,14 +58,11 @@ func parseIDCombination(idCombination, offerwallName string) (publisherID, siteI
 
 	trackID = fields[3]
 
-	entry := logrus.WithFields(logrus.Fields{
-		"event":          models.LogEventParseIDCombination,
-		"offerwall_name": offerwallName,
-		"id_combination": idCombination,
-		"publisher_id":   publisherID,
-		"site_id":        siteID,
-		"user_id":        userID,
-		"track_id":       trackID,
+	entry = entry.WithFields(logrus.Fields{
+		"publisher_id": publisherID,
+		"site_id":      siteID,
+		"user_id":      userID,
+		"track_id":     trackID,
 	})
 
 	err = errs.ErrorOrNil()
