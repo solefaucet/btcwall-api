@@ -13,9 +13,13 @@ import (
 )
 
 // IDParserMiddleware parse publisher_id, site_id, user_id from query
-func IDParserMiddleware(key, offerwallName string) gin.HandlerFunc {
+func IDParserMiddleware(key, offerwallName string, fs ...func(string) string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		publisherID, siteID, userID, trackID, _ := parseIDCombination(c.Query(key), offerwallName)
+		id := c.Query(key)
+		for _, f := range fs {
+			id = f(id)
+		}
+		publisherID, siteID, userID, trackID, _ := parseIDCombination(id, offerwallName)
 
 		c.Set("publisher_id", publisherID)
 		c.Set("site_id", siteID)

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/davecgh/go-spew/spew"
@@ -127,8 +128,11 @@ func main() {
 	)
 
 	peanutConf := config.Offerwalls.Peanut
+	peanutIDParser := func(id string) string {
+		return strings.Split(id, "-")[0]
+	}
 	offerwallRouter.GET("/peanut",
-		middlewares.IDParserMiddleware("userId", models.OfferwallNamePeanut),
+		middlewares.IDParserMiddleware("userId", models.OfferwallNamePeanut, peanutIDParser),
 		middlewares.PeanutAuthRequired(peanutConf.WhitelistIPs, peanutConf.ApplicationKey, peanutConf.TransactionKey),
 		offerwallHandler.PeanutCallback(),
 	)
