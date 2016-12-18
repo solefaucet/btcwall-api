@@ -126,6 +126,13 @@ func main() {
 		offerwallHandler.WannadsCallback(),
 	)
 
+	peanutConf := config.Offerwalls.Peanut
+	offerwallRouter.GET("/peanut",
+		middlewares.IDParserMiddleware("userId", models.OfferwallNamePeanut),
+		middlewares.PeanutAuthRequired(peanutConf.WhitelistIPs, peanutConf.ApplicationKey, peanutConf.TransactionKey),
+		offerwallHandler.PeanutCallback(),
+	)
+
 	// v1 router
 	v1Router := router.Group("/v1")
 

@@ -9,4 +9,5 @@ const (
 	OfferwallNamePointClickTrack = "AdWall"
 	OfferwallNamePtcwall         = "Ptcwall"
 	OfferwallNameWannads         = "Wannads"
+	OfferwallNamePeanut          = "Peanut"
 )

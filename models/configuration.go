@@ -53,6 +53,11 @@ type Configuration struct {
 		Wannads struct {
 			SecretKey string `mapstructure:"secret_key"`
 		} `mapstructure:"wannads"`
+		Peanut struct {
+			WhitelistIPs   []string `mapstructure:"whitelist_ips" validate:"omitempty,dive,ip"`
+			ApplicationKey string   `mapstructure:"application_key"`
+			TransactionKey string   `mapstructure:"transaction_key"`
+		} `mapstructure:"peanut"`
 	} `mapstructure:"offerwalls"`
 	Runcpa struct {
 		BaseRegistrationCallbackURL string `mapstructure:"base_registration_callback_url" validate:"required,url"`
