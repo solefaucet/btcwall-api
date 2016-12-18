@@ -1,6 +1,7 @@
 package offerwalls
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,9 +13,9 @@ import (
 func (h OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		payload := struct {
-			Amount        float64 `form:"amount" binding:"required"`
-			TransactionID string  `form:"tx_id" binding:"required"`
-			OfferName     string  `form:"offer_name"`
+			Amount    float64 `form:"amount" binding:"required"`
+			OfferID   string  `form:"offer_id" binding:"required"`
+			OfferName string  `form:"offer_name"`
 		}{}
 		if err := c.BindWith(&payload, binding.Form); err != nil {
 			logOfferwallCallback(models.OfferwallNameAdscend, c, err)
@@ -24,7 +25,7 @@ func (h OfferwallHandler) AdscendCallback() gin.HandlerFunc {
 		offer := offerFromContext(c)
 		offer.OfferName = payload.OfferName
 		offer.OfferwallName = models.OfferwallNameAdscend
-		offer.TransactionID = payload.TransactionID
+		offer.TransactionID = fmt.Sprintf("%v|%v", payload.OfferID, offer.UserID)
 		offer.Amount = int64(payload.Amount)
 
 		if err := h.handleOfferCallback(offer, payload.Amount <= 0); err != nil {
