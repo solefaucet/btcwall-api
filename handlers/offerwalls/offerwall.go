@@ -2,6 +2,7 @@ package offerwalls
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/solefaucet/btcwall-api/models"
@@ -45,6 +46,9 @@ func (h OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 		"transaction_id": offer.TransactionID,
 	})
 
+	// workaround for kiwiwall offer_name containing invalid characters
+	offer.OfferName = validOffername(offer.OfferName)
+
 	switch isChargeback {
 	case true:
 		if _, err := h.offerwallWriter.ChargebackOffer(offer); err != nil {
@@ -66,4 +70,11 @@ func (h OfferwallHandler) handleOfferCallback(offer rpcmodels.Offer, isChargebac
 
 	entry.Info("succeed to handle offer callback")
 	return nil
+}
+
+func validOffername(name string) string {
+	if utf8.ValidString(name) {
+		return name
+	}
+	return ""
 }
